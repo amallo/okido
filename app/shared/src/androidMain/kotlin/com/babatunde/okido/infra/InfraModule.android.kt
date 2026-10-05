@@ -1,8 +1,17 @@
 package com.babatunde.okido.infra
 
-import com.babatunde.okido.core.DeviceInfo
+import android.content.Context
+import com.babatunde.okido.core.ExtraTimeLedger
+import com.babatunde.okido.core.ExtraTimeScheduler
+import com.babatunde.okido.core.PinVerifier
+import com.babatunde.okido.core.ScreenLocker
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 actual val infraModule = module {
-    single<DeviceInfo> { AndroidDeviceInfo() }
+    single { androidContext().getSharedPreferences("okido", Context.MODE_PRIVATE) }
+    single<PinVerifier> { SharedPreferencesPinVerifier(get()) }
+    single<ExtraTimeLedger> { SharedPreferencesExtraTimeLedger(get()) }
+    single<ExtraTimeScheduler> { AlarmManagerExtraTimeScheduler(androidContext()) }
+    single<ScreenLocker> { DevicePolicyScreenLocker(androidContext()) }
 }

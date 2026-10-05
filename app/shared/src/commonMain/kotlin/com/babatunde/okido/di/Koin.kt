@@ -1,6 +1,7 @@
 package com.babatunde.okido.di
 
-import com.babatunde.okido.core.GetGreeting
+import com.babatunde.okido.core.EndExtraTime
+import com.babatunde.okido.core.GrantExtraTime
 import com.babatunde.okido.infra.infraModule
 import com.babatunde.okido.ui.uiModule
 import org.koin.core.context.startKoin
@@ -9,7 +10,8 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 val coreModule = module {
-    factoryOf(::GetGreeting)
+    factoryOf(::GrantExtraTime)
+    factoryOf(::EndExtraTime)
 }
 
 fun initKoin(config: KoinAppDeclaration) {
