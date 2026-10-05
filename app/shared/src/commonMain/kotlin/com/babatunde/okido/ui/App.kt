@@ -1,4 +1,4 @@
-package com.babatunde.okido
+package com.babatunde.okido.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -15,13 +15,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 import okido.shared.generated.resources.Res
 import okido.shared.generated.resources.compose_multiplatform
 
 @Composable
+fun App(viewModel: GreetingViewModel = koinViewModel()) {
+    AppContent(greeting = viewModel.greeting)
+}
+
+@Composable
 @Preview
-fun App() {
+fun AppContent(greeting: String = "Hello, Preview!") {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
@@ -35,7 +41,6 @@ fun App() {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
