@@ -1,6 +1,6 @@
 package com.babatunde.okido.ui
 
-import androidx.compose.material3.MaterialTheme
+import com.babatunde.okido.ui.theme.OkidoTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,7 +43,7 @@ fun App(
         }
     }
 
-    MaterialTheme {
+    OkidoTheme {
         if (showingParentSettings) {
             ParentSettingsScreen(
                 state = parentSettings,
@@ -52,7 +52,7 @@ fun App(
                 onToggle = parentSettingsViewModel::onToggle,
                 onClose = ::closeParentSettings,
             )
-            return@MaterialTheme
+            return@OkidoTheme
         }
         when (val state = home) {
             HomeUiState.Locked -> ExtraTimeScreen(
