@@ -5,13 +5,6 @@ import kotlin.test.assertEquals
 
 class EndExtraTimeTest {
 
-    private class FakeScreenLocker : ScreenLocker {
-        var lockCount = 0
-        override fun lock() {
-            lockCount++
-        }
-    }
-
     @Test
     fun locksScreenWhenExtraTimeEnds() {
         val screenLocker = FakeScreenLocker()
