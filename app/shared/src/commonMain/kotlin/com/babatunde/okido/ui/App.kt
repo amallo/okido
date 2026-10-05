@@ -64,6 +64,10 @@ fun App(
                 onPinChange = parentSettingsViewModel::onPinChange,
                 onSubmitPin = parentSettingsViewModel::onSubmitPin,
                 onAccessChange = parentSettingsViewModel::onAccessChange,
+                onChangePin = parentSettingsViewModel::onChangePin,
+                onChangePinInput = parentSettingsViewModel::onChangePinInput,
+                onSubmitChangePin = parentSettingsViewModel::onSubmitChangePin,
+                onCancelChangePin = parentSettingsViewModel::onCancelChangePin,
                 onClose = ::closeParentSettings,
             )
             return@OkidoTheme

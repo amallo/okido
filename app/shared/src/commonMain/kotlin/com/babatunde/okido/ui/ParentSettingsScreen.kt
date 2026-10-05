@@ -29,6 +29,7 @@ import com.babatunde.okido.core.AppAccess
 import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.GroupedRow
+import com.babatunde.okido.ui.components.GroupedSection
 import com.babatunde.okido.ui.components.PinPad
 import com.babatunde.okido.ui.components.SegmentedControl
 import com.babatunde.okido.ui.theme.OkidoTheme
@@ -39,13 +40,54 @@ fun ParentSettingsScreen(
     onPinChange: (String) -> Unit = {},
     onSubmitPin: () -> Unit = {},
     onAccessChange: (AppSetting, AppAccess) -> Unit = { _, _ -> },
+    onChangePin: () -> Unit = {},
+    onChangePinInput: (String) -> Unit = {},
+    onSubmitChangePin: () -> Unit = {},
+    onCancelChangePin: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         when (state) {
             is ParentSettingsUiState.PinRequired -> PinStep(state, onPinChange, onSubmitPin, onClose)
-            is ParentSettingsUiState.Unlocked -> AppsStep(state.apps, state.icons, onAccessChange, onClose)
+            is ParentSettingsUiState.Unlocked -> AppsStep(state, onAccessChange, onChangePin, onClose)
+            is ParentSettingsUiState.ChangingPin ->
+                ChangePinStep(state, onChangePinInput, onSubmitChangePin, onCancelChangePin)
         }
+    }
+}
+
+@Composable
+private fun ChangePinStep(
+    state: ParentSettingsUiState.ChangingPin,
+    onPinChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Box(modifier = Modifier.fillMaxSize().safeContentPadding()) {
+        TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.TopStart)) {
+            Text("Annuler", style = MaterialTheme.typography.bodyLarge)
+        }
+        PinPad(
+            title = when (state.step) {
+                PinChangeStep.Current -> "Code actuel"
+                PinChangeStep.New -> "Nouveau code"
+                PinChangeStep.Confirm -> "Confirme le nouveau code"
+            },
+            subtitle = when (state.step) {
+                PinChangeStep.Current -> "Saisis ton code parent actuel"
+                PinChangeStep.New -> "Choisis un nouveau code parent"
+                PinChangeStep.Confirm -> "Saisis-le une deuxième fois"
+            },
+            errorMessage = when (state.error) {
+                PinChangeError.Mismatch -> "Les codes ne correspondent pas, recommence"
+                PinChangeError.InvalidPin, null -> "Code incorrect"
+            },
+            pin = state.pin,
+            onPinChange = onPinChange,
+            onSubmit = onSubmit,
+            error = state.error != null,
+            modifier = Modifier.align(Alignment.Center),
+        )
     }
 }
 
@@ -74,11 +116,13 @@ private fun PinStep(
 
 @Composable
 private fun AppsStep(
-    apps: List<AppSetting>,
-    icons: Map<String, ImageBitmap>,
+    state: ParentSettingsUiState.Unlocked,
     onAccessChange: (AppSetting, AppAccess) -> Unit,
+    onChangePin: () -> Unit,
     onClose: () -> Unit,
 ) {
+    val apps = state.apps
+    val icons = state.icons
     Column(modifier = Modifier.fillMaxSize().safeContentPadding()) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -91,6 +135,20 @@ private fun AppsStep(
             }
         }
         LazyColumn(contentPadding = PaddingValues(vertical = 16.dp)) {
+            item {
+                GroupedSection(
+                    header = "Code parent",
+                    footer = if (state.pinChanged) "Code modifié." else null,
+                    modifier = Modifier.padding(bottom = 24.dp),
+                ) {
+                    GroupedRow(
+                        label = "Changer le code",
+                        labelColor = MaterialTheme.colorScheme.primary,
+                        showDivider = false,
+                        onClick = onChangePin,
+                    )
+                }
+            }
             item {
                 SectionText(
                     text = "APPS · ${apps.count { it.access == AppAccess.Timed }} AVEC TEMPS · " +
@@ -191,6 +249,20 @@ private fun AppsPreview() {
                     AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), AppAccess.Timed),
                     AppSetting(LaunchableApp(id = "com.example.radio", label = "Radio"), AppAccess.Always),
                 ),
+            ),
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun ChangePinPreview() {
+    OkidoTheme {
+        ParentSettingsScreen(
+            state = ParentSettingsUiState.ChangingPin(
+                settings = ParentSettingsUiState.Unlocked(emptyList()),
+                step = PinChangeStep.New,
+                pin = "2",
             ),
         )
     }
