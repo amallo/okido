@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
@@ -37,6 +39,7 @@ import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.GroupedRow
 import com.babatunde.okido.ui.components.GroupedSection
 import com.babatunde.okido.ui.components.TimeRing
+import com.babatunde.okido.ui.components.remainingMinutes
 import com.babatunde.okido.ui.theme.OkidoTheme
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -52,69 +55,72 @@ fun HomeScreen(
     onParentSettings: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            modifier = Modifier.safeContentPadding(),
-            contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            fullWidth {
+        Column(modifier = Modifier.fillMaxSize().safeContentPadding()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(
                     text = "Okido",
                     style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.weight(1f),
+                )
+                TimePill(remaining)
+            }
+            // Only the apps scroll, so the time and the actions stay in view however many apps are allowed.
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(4),
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                items(apps, key = { it.id }) { app -> AppTile(app, icons[app.id], onClick = { onLaunch(app) }) }
+                item(key = "add") { AddAppTile(onClick = onParentSettings) }
+                if (apps.isEmpty()) {
+                    fullWidth {
+                        Text(
+                            text = "Aucune app pour l'instant.\nUn parent peut en ajouter avec +",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                        )
+                    }
+                }
+            }
+            GroupedSection(modifier = Modifier.padding(top = 8.dp)) {
+                GroupedRow(
+                    label = "Demander plus de temps",
+                    labelColor = MaterialTheme.colorScheme.primary,
+                    onClick = onMoreTime,
+                )
+                GroupedRow(
+                    label = "Bloquer maintenant",
+                    labelColor = MaterialTheme.colorScheme.error,
+                    onClick = onLockNow,
+                    showDivider = false,
                 )
             }
-            fullWidth {
-                GroupedSection(header = "Temps restant") {
-                    TimeRing(
-                        remaining = remaining,
-                        modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 24.dp),
-                    )
-                }
-            }
-            fullWidth {
-                Text(
-                    text = "APPS",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 32.dp, top = 8.dp),
-                )
-            }
-            if (apps.isEmpty()) {
-                fullWidth {
-                    Text(
-                        text = "Aucune app pour l'instant.\nUn parent peut en ajouter avec +",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
-                    )
-                }
-            }
-            items(apps, key = { it.id }) { app -> AppTile(app, icons[app.id], onClick = { onLaunch(app) }) }
-            item(key = "add") { AddAppTile(onClick = onParentSettings) }
-            fullWidth {
-                GroupedSection(modifier = Modifier.padding(top = 8.dp)) {
-                    GroupedRow(
-                        label = "Demander plus de temps",
-                        labelColor = MaterialTheme.colorScheme.primary,
-                        onClick = onMoreTime,
-                    )
-                    GroupedRow(
-                        label = "Bloquer maintenant",
-                        labelColor = MaterialTheme.colorScheme.error,
-                        onClick = onLockNow,
-                        showDivider = false,
-                    )
-                }
-            }
-            fullWidth {
-                TextButton(onClick = onParentSettings) {
-                    Text("Réglages parent", style = MaterialTheme.typography.bodyLarge)
-                }
+            TextButton(onClick = onParentSettings, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text("Réglages parent", style = MaterialTheme.typography.bodyLarge)
             }
         }
+    }
+}
+
+/** Remaining time as a small ring and the minutes left, like a status chip. */
+@Composable
+private fun TimePill(remaining: Duration) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(start = 6.dp, end = 14.dp, top = 6.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TimeRing(remaining = remaining, size = 32.dp, strokeWidth = 5.dp, showLabel = false)
+        Spacer(Modifier.width(8.dp))
+        Text("${remainingMinutes(remaining)} min", style = MaterialTheme.typography.titleMedium)
     }
 }
 
@@ -182,6 +188,17 @@ private fun HomePreview() {
                 LaunchableApp(id = "com.example.clock", label = "Horloge"),
             ),
             remaining = 25.minutes,
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun HomeManyAppsPreview() {
+    OkidoTheme {
+        HomeScreen(
+            apps = (1..24).map { LaunchableApp(id = "com.example.app$it", label = "App $it") },
+            remaining = 42.minutes,
         )
     }
 }
