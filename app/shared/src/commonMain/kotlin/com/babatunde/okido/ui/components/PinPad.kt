@@ -47,6 +47,7 @@ fun PinPad(
     modifier: Modifier = Modifier,
     error: Boolean = false,
     subtitle: String? = null,
+    errorMessage: String = "Code incorrect",
 ) {
     val shake = remember { Animatable(0f) }
     val haptics = LocalHapticFeedback.current
@@ -78,7 +79,7 @@ fun PinPad(
         Text(title, style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(8.dp))
         Text(
-            text = if (error) "Code incorrect" else subtitle.orEmpty(),
+            text = if (error) errorMessage else subtitle.orEmpty(),
             style = MaterialTheme.typography.bodyMedium,
             color = if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
         )

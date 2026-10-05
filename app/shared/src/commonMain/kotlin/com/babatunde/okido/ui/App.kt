@@ -17,10 +17,12 @@ fun App(
     homeViewModel: HomeViewModel = koinViewModel(),
     extraTimeViewModel: ExtraTimeViewModel = koinViewModel(),
     parentSettingsViewModel: ParentSettingsViewModel = koinViewModel(),
+    onboardingViewModel: OnboardingViewModel = koinViewModel(),
 ) {
     val home by homeViewModel.state.collectAsStateWithLifecycle()
     val extraTime by extraTimeViewModel.state.collectAsStateWithLifecycle()
     val parentSettings by parentSettingsViewModel.state.collectAsStateWithLifecycle()
+    val onboarding by onboardingViewModel.state.collectAsStateWithLifecycle()
     var askingMoreTime by remember { mutableStateOf(false) }
     var showingParentSettings by remember { mutableStateOf(false) }
 
@@ -31,6 +33,7 @@ fun App(
     }
 
     LifecycleResumeEffect(Unit) {
+        onboardingViewModel.refresh()
         homeViewModel.refresh()
         onPauseOrDispose {}
     }
@@ -44,6 +47,17 @@ fun App(
     }
 
     OkidoTheme {
+        if (onboarding.page != OnboardingPage.Done) {
+            OnboardingScreen(
+                state = onboarding,
+                onContinue = onboardingViewModel::onContinue,
+                onBack = onboardingViewModel::onBack,
+                onPinChange = onboardingViewModel::onPinChange,
+                onSubmitPin = onboardingViewModel::onSubmitPin,
+                onOpenSettings = onboardingViewModel::onOpenSettings,
+            )
+            return@OkidoTheme
+        }
         if (showingParentSettings) {
             ParentSettingsScreen(
                 state = parentSettings,

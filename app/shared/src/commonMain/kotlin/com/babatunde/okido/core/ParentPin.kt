@@ -1,5 +1,7 @@
 package com.babatunde.okido.core
 
-interface PinVerifier {
+interface ParentPin {
     fun verify(pin: String): Boolean
+    fun isSet(): Boolean
+    fun save(pin: String)
 }

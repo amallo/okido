@@ -8,14 +8,14 @@ class UnlockParentSettingsTest {
 
     @Test
     fun unlocksWhenPinIsValid() {
-        val unlockParentSettings = UnlockParentSettings(FakePinVerifier("1234"))
+        val unlockParentSettings = UnlockParentSettings(FakeParentPin("1234"))
 
         assertTrue(unlockParentSettings(pin = "1234"))
     }
 
     @Test
     fun staysLockedWhenPinIsInvalid() {
-        val unlockParentSettings = UnlockParentSettings(FakePinVerifier("1234"))
+        val unlockParentSettings = UnlockParentSettings(FakeParentPin("1234"))
 
         assertFalse(unlockParentSettings(pin = "0000"))
     }

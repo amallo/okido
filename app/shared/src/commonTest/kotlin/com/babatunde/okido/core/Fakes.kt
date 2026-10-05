@@ -32,8 +32,12 @@ class FakeAppCatalog(
     override fun icon(app: LaunchableApp): ByteArray? = icons[app.id]
 }
 
-class FakePinVerifier(private val validPin: String) : PinVerifier {
-    override fun verify(pin: String): Boolean = pin == validPin
+class FakeParentPin(private var pin: String? = null) : ParentPin {
+    override fun verify(pin: String): Boolean = pin == this.pin
+    override fun isSet(): Boolean = pin != null
+    override fun save(pin: String) {
+        this.pin = pin
+    }
 }
 
 class FakeAppAccessStore(
@@ -47,4 +51,19 @@ class FakeAppAccessStore(
     }
     override fun canUse(appId: String, now: Instant): Boolean =
         (accesses[appId] ?: AppAccess.Blocked).isOpen(now, unlockedUntil)
+}
+
+class FakeOnboardingStore(var completed: Boolean = false) : OnboardingStore {
+    override fun isCompleted(): Boolean = completed
+    override fun complete() {
+        completed = true
+    }
+}
+
+class FakeBlockingService(private val enabled: Boolean = false) : BlockingService {
+    var settingsOpened = false
+    override fun isEnabled(): Boolean = enabled
+    override fun openSettings() {
+        settingsOpened = true
+    }
 }

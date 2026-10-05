@@ -21,7 +21,7 @@ class GrantExtraTimeTest {
     @Test
     fun unlocksUntilNowPlusDurationWhenPinIsValid() {
         val accessStore = FakeAccessStore()
-        val grantExtraTime = GrantExtraTime(FakePinVerifier("1234"), accessStore, FakeExtraTimeScheduler(), FakeClock(now))
+        val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), accessStore, FakeExtraTimeScheduler(), FakeClock(now))
 
         val result = grantExtraTime(pin = "1234", duration = 15.minutes)
 
@@ -32,7 +32,7 @@ class GrantExtraTimeTest {
     @Test
     fun schedulesEndOfExtraTimeWhenPinIsValid() {
         val scheduler = FakeExtraTimeScheduler()
-        val grantExtraTime = GrantExtraTime(FakePinVerifier("1234"), FakeAccessStore(), scheduler, FakeClock(now))
+        val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), FakeAccessStore(), scheduler, FakeClock(now))
 
         grantExtraTime(pin = "1234", duration = 15.minutes)
 
@@ -43,7 +43,7 @@ class GrantExtraTimeTest {
     fun addsToRemainingTimeWhenStillUnlocked() {
         val accessStore = FakeAccessStore(unlockedUntil = now + 5.minutes)
         val scheduler = FakeExtraTimeScheduler()
-        val grantExtraTime = GrantExtraTime(FakePinVerifier("1234"), accessStore, scheduler, FakeClock(now))
+        val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), accessStore, scheduler, FakeClock(now))
 
         grantExtraTime(pin = "1234", duration = 15.minutes)
 
@@ -55,7 +55,7 @@ class GrantExtraTimeTest {
     fun grantsNothingWhenPinIsInvalid() {
         val accessStore = FakeAccessStore()
         val scheduler = FakeExtraTimeScheduler()
-        val grantExtraTime = GrantExtraTime(FakePinVerifier("1234"), accessStore, scheduler, FakeClock(now))
+        val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), accessStore, scheduler, FakeClock(now))
 
         val result = grantExtraTime(pin = "0000", duration = 15.minutes)
 

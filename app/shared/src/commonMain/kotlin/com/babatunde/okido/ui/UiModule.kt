@@ -11,4 +11,5 @@ val uiModule = module {
     viewModel { ExtraTimeViewModel(get(), grantableDurations(debug = getProperty(DEBUG_PROPERTY, false))) }
     viewModelOf(::HomeViewModel)
     viewModelOf(::ParentSettingsViewModel)
+    viewModelOf(::OnboardingViewModel)
 }
