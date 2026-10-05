@@ -31,6 +31,7 @@ fun HomeScreen(
     remaining: Duration = 25.minutes,
     onLaunch: (LaunchableApp) -> Unit = {},
     onMoreTime: () -> Unit = {},
+    onLockNow: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.safeContentPadding().padding(16.dp)) {
@@ -50,6 +51,9 @@ fun HomeScreen(
             }
             OutlinedButton(onClick = onMoreTime, modifier = Modifier.fillMaxWidth()) {
                 Text("Plus de temps")
+            }
+            OutlinedButton(onClick = onLockNow, modifier = Modifier.fillMaxWidth()) {
+                Text("Bloquer maintenant")
             }
         }
     }

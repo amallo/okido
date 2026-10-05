@@ -58,6 +58,7 @@ fun App(
                     remaining = state.remaining,
                     onLaunch = homeViewModel::onLaunch,
                     onMoreTime = { askingMoreTime = true },
+                    onLockNow = homeViewModel::onLockNow,
                 )
             }
         }

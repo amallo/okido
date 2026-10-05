@@ -6,6 +6,7 @@ import com.babatunde.okido.core.AppCatalog
 import com.babatunde.okido.core.CanUseApps
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.core.LockNow
 import com.babatunde.okido.core.RemainingTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -34,6 +35,7 @@ class HomeViewModel(
     private val remainingTime: RemainingTime,
     private val appCatalog: AppCatalog,
     private val launchApp: LaunchApp,
+    private val lockNow: LockNow,
 ) : ViewModel() {
     private val apps = MutableStateFlow<List<LaunchableApp>>(emptyList())
     private val refreshes = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
@@ -60,6 +62,11 @@ class HomeViewModel(
 
     fun onLaunch(app: LaunchableApp) {
         launchApp(app)
+        refresh()
+    }
+
+    fun onLockNow() {
+        lockNow()
         refresh()
     }
 }
