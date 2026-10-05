@@ -3,6 +3,13 @@
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:name=".OkidoApplication"
         android:allowBackup="true"
@@ -13,11 +20,18 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
+            android:launchMode="singleTask"
             android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -25,17 +39,17 @@
             android:exported="false"
             android:name="com.babatunde.okido.infra.ExtraTimeEndedReceiver" />
 
-        <receiver
-            android:exported="true"
-            android:name="com.babatunde.okido.infra.OkidoDeviceAdminReceiver"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/device_admin" />
+        <service
+            android:exported="false"
+            android:name="com.babatunde.okido.infra.OkidoAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-        </receiver>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service" />
+        </service>
     </application>
 
 </manifest>

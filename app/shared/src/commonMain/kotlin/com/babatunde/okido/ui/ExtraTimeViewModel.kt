@@ -28,6 +28,10 @@ class ExtraTimeViewModel(private val grantExtraTime: GrantExtraTime) : ViewModel
         _state.update { it.copy(duration = duration, result = null) }
     }
 
+    fun clearResult() {
+        _state.update { it.copy(result = null) }
+    }
+
     fun onGrant() {
         val current = _state.value
         val result = grantExtraTime(pin = current.pin, duration = current.duration)

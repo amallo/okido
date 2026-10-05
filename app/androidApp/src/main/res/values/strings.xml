@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Okido</string>
+    <string name="accessibility_description">Okido ramène l\'enfant sur l\'écran d\'accueil quand le temps est écoulé.</string>
 </resources>
