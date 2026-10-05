@@ -44,9 +44,12 @@ import okido.shared.generated.resources.Res
 import okido.shared.generated.resources.hourglass
 import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
-private val durations = listOf(1.minutes, 15.minutes, 30.minutes)
+/** A granted duration as shown to the parent, e.g. "15 min" or "1 h". */
+private fun Duration.label(): String =
+    if (this >= 1.hours && inWholeMinutes % 60 == 0L) "$inWholeHours h" else "$inWholeMinutes min"
 
 /**
  * Locked: shows the "time's up" screen first, then the code step once the child asks for more time.
@@ -186,16 +189,16 @@ private fun CodeStep(
             Text("Annuler", style = MaterialTheme.typography.bodyLarge)
         }
         SegmentedControl(
-            options = durations,
+            options = state.durations,
             selected = state.duration,
             onSelect = onDurationChange,
-            label = { "${it.inWholeMinutes} min" },
+            label = { it.label() },
             modifier = Modifier.padding(horizontal = 32.dp),
         )
         Spacer(Modifier.weight(1f))
         PinPad(
             title = "Code parent",
-            subtitle = "pour accorder ${state.duration.inWholeMinutes} min de plus",
+            subtitle = "pour accorder ${state.duration.label()} de plus",
             pin = state.pin,
             onPinChange = onPinChange,
             onSubmit = onGrant,

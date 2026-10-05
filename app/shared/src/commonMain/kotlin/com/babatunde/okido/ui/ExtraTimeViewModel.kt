@@ -8,16 +8,25 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+
+/** Durations a parent can grant; [debug] builds add one minute to try the lock quickly. */
+fun grantableDurations(debug: Boolean = false): List<Duration> =
+    listOfNotNull(1.minutes.takeIf { debug }, 5.minutes, 15.minutes, 30.minutes, 1.hours)
 
 data class ExtraTimeUiState(
     val pin: String = "",
+    val durations: List<Duration> = grantableDurations(),
     val duration: Duration = 15.minutes,
     val result: GrantExtraTimeResult? = null,
 )
 
-class ExtraTimeViewModel(private val grantExtraTime: GrantExtraTime) : ViewModel() {
-    private val _state = MutableStateFlow(ExtraTimeUiState())
+class ExtraTimeViewModel(
+    private val grantExtraTime: GrantExtraTime,
+    durations: List<Duration>,
+) : ViewModel() {
+    private val _state = MutableStateFlow(ExtraTimeUiState(durations = durations))
     val state: StateFlow<ExtraTimeUiState> = _state.asStateFlow()
 
     fun onPinChange(pin: String) {
