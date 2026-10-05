@@ -16,10 +16,19 @@ import org.koin.compose.viewmodel.koinViewModel
 fun App(
     homeViewModel: HomeViewModel = koinViewModel(),
     extraTimeViewModel: ExtraTimeViewModel = koinViewModel(),
+    parentSettingsViewModel: ParentSettingsViewModel = koinViewModel(),
 ) {
     val home by homeViewModel.state.collectAsStateWithLifecycle()
     val extraTime by extraTimeViewModel.state.collectAsStateWithLifecycle()
+    val parentSettings by parentSettingsViewModel.state.collectAsStateWithLifecycle()
     var askingMoreTime by remember { mutableStateOf(false) }
+    var showingParentSettings by remember { mutableStateOf(false) }
+
+    fun closeParentSettings() {
+        showingParentSettings = false
+        parentSettingsViewModel.close()
+        homeViewModel.refresh()
+    }
 
     LifecycleResumeEffect(Unit) {
         homeViewModel.refresh()
@@ -35,6 +44,16 @@ fun App(
     }
 
     MaterialTheme {
+        if (showingParentSettings) {
+            ParentSettingsScreen(
+                state = parentSettings,
+                onPinChange = parentSettingsViewModel::onPinChange,
+                onSubmitPin = parentSettingsViewModel::onSubmitPin,
+                onToggle = parentSettingsViewModel::onToggle,
+                onClose = ::closeParentSettings,
+            )
+            return@MaterialTheme
+        }
         when (val state = home) {
             HomeUiState.Locked -> ExtraTimeScreen(
                 title = "Temps écoulé",
@@ -42,6 +61,7 @@ fun App(
                 onPinChange = extraTimeViewModel::onPinChange,
                 onDurationChange = extraTimeViewModel::onDurationChange,
                 onGrant = extraTimeViewModel::onGrant,
+                onParentSettings = { showingParentSettings = true },
             )
             is HomeUiState.Unlocked -> if (askingMoreTime) {
                 ExtraTimeScreen(
@@ -59,6 +79,7 @@ fun App(
                     onLaunch = homeViewModel::onLaunch,
                     onMoreTime = { askingMoreTime = true },
                     onLockNow = homeViewModel::onLockNow,
+                    onParentSettings = { showingParentSettings = true },
                 )
             }
         }

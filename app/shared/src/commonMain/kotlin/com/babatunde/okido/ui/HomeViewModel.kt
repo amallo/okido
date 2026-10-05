@@ -2,8 +2,7 @@ package com.babatunde.okido.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.babatunde.okido.core.AppCatalog
-import com.babatunde.okido.core.CanUseApps
+import com.babatunde.okido.core.AllowedApps
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.core.LockNow
@@ -31,9 +30,8 @@ sealed interface HomeUiState {
 }
 
 class HomeViewModel(
-    private val canUseApps: CanUseApps,
     private val remainingTime: RemainingTime,
-    private val appCatalog: AppCatalog,
+    private val allowedApps: AllowedApps,
     private val launchApp: LaunchApp,
     private val lockNow: LockNow,
 ) : ViewModel() {
@@ -49,14 +47,14 @@ class HomeViewModel(
     }
 
     val state: StateFlow<HomeUiState> =
-        combine(merge(ticks, refreshes).map { canUseApps() to remainingTime() }, apps) { (canUse, remaining), apps ->
-            if (canUse) HomeUiState.Unlocked(apps, remaining) else HomeUiState.Locked
+        combine(merge(ticks, refreshes).map { remainingTime() }, apps) { remaining, apps ->
+            if (remaining > Duration.ZERO) HomeUiState.Unlocked(apps, remaining) else HomeUiState.Locked
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState.Locked)
 
     fun refresh() {
         refreshes.tryEmit(Unit)
         viewModelScope.launch {
-            apps.value = withContext(Dispatchers.IO) { appCatalog.launchableApps() }
+            apps.value = withContext(Dispatchers.IO) { allowedApps() }
         }
     }
 

@@ -3,20 +3,22 @@ package com.babatunde.okido.infra
 import android.accessibilityservice.AccessibilityService
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
-import com.babatunde.okido.core.CanUseApps
+import com.babatunde.okido.core.AllowedAppsStore
+import com.babatunde.okido.core.Clock
 import com.babatunde.okido.core.ScreenLocker
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class OkidoAccessibilityService : AccessibilityService(), KoinComponent {
-    private val canUseApps: CanUseApps by inject()
+    private val allowedAppsStore: AllowedAppsStore by inject()
+    private val clock: Clock by inject()
     private val screenLocker: ScreenLocker by inject()
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val packageName = event.packageName?.toString() ?: return
         if (packageName in alwaysAllowedPackages()) return
-        if (!canUseApps()) screenLocker.lock()
+        if (!allowedAppsStore.canUse(packageName, clock.now())) screenLocker.lock()
     }
 
     override fun onInterrupt() = Unit

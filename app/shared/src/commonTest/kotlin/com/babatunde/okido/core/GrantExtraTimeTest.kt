@@ -9,10 +9,6 @@ import kotlin.time.Instant
 
 class GrantExtraTimeTest {
 
-    private class FakePinVerifier(private val validPin: String) : PinVerifier {
-        override fun verify(pin: String): Boolean = pin == validPin
-    }
-
     private class FakeExtraTimeScheduler : ExtraTimeScheduler {
         val scheduled = mutableListOf<Duration>()
         override fun scheduleEnd(after: Duration) {

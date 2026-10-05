@@ -13,8 +13,8 @@ class LaunchAppTest {
     @Test
     fun launchesAppWhenTimeRemains() {
         val appCatalog = FakeAppCatalog()
-        val canUseApps = CanUseApps(FakeAccessStore(unlockedUntil = now + 1.minutes), FakeClock(now))
-        val launchApp = LaunchApp(canUseApps, appCatalog, FakeScreenLocker())
+        val allowedAppsStore = FakeAllowedAppsStore(setOf(youtube.id), unlockedUntil = now + 1.minutes)
+        val launchApp = LaunchApp(allowedAppsStore, FakeClock(now), appCatalog, FakeScreenLocker())
 
         launchApp(youtube)
 
@@ -25,8 +25,21 @@ class LaunchAppTest {
     fun locksInsteadOfLaunchingWhenNoTimeRemains() {
         val appCatalog = FakeAppCatalog()
         val screenLocker = FakeScreenLocker()
-        val canUseApps = CanUseApps(FakeAccessStore(unlockedUntil = now), FakeClock(now))
-        val launchApp = LaunchApp(canUseApps, appCatalog, screenLocker)
+        val allowedAppsStore = FakeAllowedAppsStore(setOf(youtube.id), unlockedUntil = now)
+        val launchApp = LaunchApp(allowedAppsStore, FakeClock(now), appCatalog, screenLocker)
+
+        launchApp(youtube)
+
+        assertEquals(emptyList(), appCatalog.launched)
+        assertEquals(1, screenLocker.lockCount)
+    }
+
+    @Test
+    fun locksInsteadOfLaunchingWhenAppIsNotAllowed() {
+        val appCatalog = FakeAppCatalog()
+        val screenLocker = FakeScreenLocker()
+        val allowedAppsStore = FakeAllowedAppsStore(unlockedUntil = now + 1.minutes)
+        val launchApp = LaunchApp(allowedAppsStore, FakeClock(now), appCatalog, screenLocker)
 
         launchApp(youtube)
 

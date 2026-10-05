@@ -6,4 +6,5 @@ import org.koin.dsl.module
 val uiModule = module {
     viewModelOf(::ExtraTimeViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::ParentSettingsViewModel)
 }

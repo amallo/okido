@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +33,7 @@ fun HomeScreen(
     onLaunch: (LaunchableApp) -> Unit = {},
     onMoreTime: () -> Unit = {},
     onLockNow: () -> Unit = {},
+    onParentSettings: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.safeContentPadding().padding(16.dp)) {
@@ -54,6 +56,9 @@ fun HomeScreen(
             }
             OutlinedButton(onClick = onLockNow, modifier = Modifier.fillMaxWidth()) {
                 Text("Bloquer maintenant")
+            }
+            TextButton(onClick = onParentSettings, modifier = Modifier.fillMaxWidth()) {
+                Text("Réglages parent")
             }
         }
     }

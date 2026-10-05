@@ -2,6 +2,7 @@ package com.babatunde.okido.infra
 
 import android.content.Context
 import com.babatunde.okido.core.AccessStore
+import com.babatunde.okido.core.AllowedAppsStore
 import com.babatunde.okido.core.AppCatalog
 import com.babatunde.okido.core.Clock
 import com.babatunde.okido.core.ExtraTimeScheduler
@@ -15,6 +16,7 @@ actual val infraModule = module {
     single<PinVerifier> { SharedPreferencesPinVerifier(get()) }
     single<Clock> { DeviceClock() }
     single<AccessStore> { SharedPreferencesAccessStore(get()) }
+    single<AllowedAppsStore> { SharedPreferencesAllowedAppsStore(get(), get()) }
     single<ExtraTimeScheduler> { AlarmManagerExtraTimeScheduler(androidContext()) }
     single<ScreenLocker> { HomeScreenLocker(androidContext()) }
     single<AppCatalog> { PackageManagerAppCatalog(androidContext()) }

@@ -36,6 +36,7 @@ fun ExtraTimeScreen(
     onDurationChange: (Duration) -> Unit = {},
     onGrant: () -> Unit = {},
     onBack: (() -> Unit)? = null,
+    onParentSettings: (() -> Unit)? = null,
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -70,6 +71,11 @@ fun ExtraTimeScreen(
             if (onBack != null) {
                 TextButton(onClick = onBack) {
                     Text("Retour")
+                }
+            }
+            if (onParentSettings != null) {
+                TextButton(onClick = onParentSettings) {
+                    Text("Réglages parent")
                 }
             }
         }
