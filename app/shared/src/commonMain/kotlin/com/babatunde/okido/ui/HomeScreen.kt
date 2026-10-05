@@ -1,7 +1,9 @@
 package com.babatunde.okido.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.GroupedRow
 import com.babatunde.okido.ui.components.GroupedSection
@@ -79,7 +82,7 @@ fun HomeScreen(
             if (apps.isEmpty()) {
                 fullWidth {
                     Text(
-                        text = "Aucune app autorisée.\nDemande à un parent d'en ajouter.",
+                        text = "Aucune app pour l'instant.\nUn parent peut en ajouter avec +",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -88,6 +91,7 @@ fun HomeScreen(
                 }
             }
             items(apps, key = { it.id }) { app -> AppTile(app, onClick = { onLaunch(app) }) }
+            item(key = "add") { AddAppTile(onClick = onParentSettings) }
             fullWidth {
                 GroupedSection(modifier = Modifier.padding(top = 8.dp)) {
                     GroupedRow(
@@ -133,6 +137,35 @@ private fun AppTile(app: LaunchableApp, onClick: () -> Unit) {
             style = MaterialTheme.typography.labelSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+/** Opens the parent settings, so adding an app still asks for the parent code. */
+@Composable
+private fun AddAppTile(onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 4.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .clip(AppIconShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text("+", fontSize = 32.sp, color = MaterialTheme.colorScheme.primary)
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = "Ajouter",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
