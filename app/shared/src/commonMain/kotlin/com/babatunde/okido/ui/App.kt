@@ -55,6 +55,7 @@ fun App(
             } else {
                 HomeScreen(
                     apps = state.apps,
+                    remaining = state.remaining,
                     onLaunch = homeViewModel::onLaunch,
                     onMoreTime = { askingMoreTime = true },
                 )

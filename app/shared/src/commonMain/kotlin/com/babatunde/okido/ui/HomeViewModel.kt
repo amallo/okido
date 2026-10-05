@@ -1,32 +1,60 @@
 package com.babatunde.okido.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.babatunde.okido.core.AppCatalog
 import com.babatunde.okido.core.CanUseApps
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.core.RemainingTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 sealed interface HomeUiState {
     data object Locked : HomeUiState
-    data class Unlocked(val apps: List<LaunchableApp>) : HomeUiState
+    data class Unlocked(val apps: List<LaunchableApp>, val remaining: Duration) : HomeUiState
 }
 
 class HomeViewModel(
     private val canUseApps: CanUseApps,
+    private val remainingTime: RemainingTime,
     private val appCatalog: AppCatalog,
     private val launchApp: LaunchApp,
 ) : ViewModel() {
-    private val _state = MutableStateFlow<HomeUiState>(HomeUiState.Locked)
-    val state: StateFlow<HomeUiState> = _state.asStateFlow()
+    private val apps = MutableStateFlow<List<LaunchableApp>>(emptyList())
+    private val refreshes = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    // Ticks only while the UI collects the state, so nothing runs when Okido is in the background.
+    private val ticks = flow {
+        while (true) {
+            emit(Unit)
+            delay(30.seconds)
+        }
+    }
+
+    val state: StateFlow<HomeUiState> =
+        combine(merge(ticks, refreshes).map { canUseApps() to remainingTime() }, apps) { (canUse, remaining), apps ->
+            if (canUse) HomeUiState.Unlocked(apps, remaining) else HomeUiState.Locked
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState.Locked)
 
     fun refresh() {
-        _state.value = if (canUseApps()) {
-            HomeUiState.Unlocked(appCatalog.launchableApps())
-        } else {
-            HomeUiState.Locked
+        refreshes.tryEmit(Unit)
+        viewModelScope.launch {
+            apps.value = withContext(Dispatchers.IO) { appCatalog.launchableApps() }
         }
     }
 

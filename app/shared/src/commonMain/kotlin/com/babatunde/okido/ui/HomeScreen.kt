@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.babatunde.okido.core.LaunchableApp
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 @Preview
@@ -26,11 +28,13 @@ fun HomeScreen(
         LaunchableApp(id = "com.example.camera", label = "Appareil photo"),
         LaunchableApp(id = "com.example.clock", label = "Horloge"),
     ),
+    remaining: Duration = 25.minutes,
     onLaunch: (LaunchableApp) -> Unit = {},
     onMoreTime: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.safeContentPadding().padding(16.dp)) {
+            Text(remainingLabel(remaining), style = MaterialTheme.typography.headlineSmall)
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(apps, key = { it.id }) { app ->
                     Text(
@@ -49,4 +53,9 @@ fun HomeScreen(
             }
         }
     }
+}
+
+private fun remainingLabel(remaining: Duration): String {
+    val minutes = (remaining.inWholeSeconds + 59) / 60
+    return if (minutes <= 1) "Il reste moins d'une minute" else "Il reste $minutes min"
 }

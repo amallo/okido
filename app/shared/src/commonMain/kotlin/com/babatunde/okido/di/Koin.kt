@@ -4,6 +4,7 @@ import com.babatunde.okido.core.CanUseApps
 import com.babatunde.okido.core.EndExtraTime
 import com.babatunde.okido.core.GrantExtraTime
 import com.babatunde.okido.core.LaunchApp
+import com.babatunde.okido.core.RemainingTime
 import com.babatunde.okido.infra.infraModule
 import com.babatunde.okido.ui.uiModule
 import org.koin.core.context.startKoin
@@ -16,6 +17,7 @@ val coreModule = module {
     factoryOf(::EndExtraTime)
     factoryOf(::CanUseApps)
     factoryOf(::LaunchApp)
+    factoryOf(::RemainingTime)
 }
 
 fun initKoin(config: KoinAppDeclaration) {
