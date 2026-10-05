@@ -55,9 +55,12 @@ fun App(
             return@OkidoTheme
         }
         when (val state = home) {
-            HomeUiState.Locked -> ExtraTimeScreen(
+            is HomeUiState.Locked -> ExtraTimeScreen(
                 title = "Temps écoulé",
                 state = extraTime,
+                alwaysApps = state.alwaysApps,
+                icons = state.icons,
+                onLaunch = homeViewModel::onLaunch,
                 onPinChange = extraTimeViewModel::onPinChange,
                 onDurationChange = extraTimeViewModel::onDurationChange,
                 onGrant = extraTimeViewModel::onGrant,

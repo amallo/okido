@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.ImageBitmap
 import com.babatunde.okido.core.AllowedApps
+import com.babatunde.okido.core.AlwaysAllowedApps
 import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
@@ -27,7 +28,10 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 sealed interface HomeUiState {
-    data object Locked : HomeUiState
+    data class Locked(
+        val alwaysApps: List<LaunchableApp> = emptyList(),
+        val icons: Map<String, ImageBitmap> = emptyMap(),
+    ) : HomeUiState
     data class Unlocked(
         val apps: List<LaunchableApp>,
         val remaining: Duration,
@@ -38,11 +42,12 @@ sealed interface HomeUiState {
 class HomeViewModel(
     private val remainingTime: RemainingTime,
     private val allowedApps: AllowedApps,
+    private val alwaysAllowedApps: AlwaysAllowedApps,
     private val appIcons: AppIcons,
     private val launchApp: LaunchApp,
     private val lockNow: LockNow,
 ) : ViewModel() {
-    private val apps = MutableStateFlow<List<LaunchableApp>>(emptyList())
+    private val apps = MutableStateFlow(LoadedApps())
     private val icons = MutableStateFlow<Map<String, ImageBitmap>>(emptyMap())
     private val refreshes = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
@@ -56,15 +61,20 @@ class HomeViewModel(
 
     val state: StateFlow<HomeUiState> =
         combine(merge(ticks, refreshes).map { remainingTime() }, apps, icons) { remaining, apps, icons ->
-            if (remaining > Duration.ZERO) HomeUiState.Unlocked(apps, remaining, icons) else HomeUiState.Locked
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState.Locked)
+            if (remaining > Duration.ZERO) {
+                HomeUiState.Unlocked(apps.allowed, remaining, icons)
+            } else {
+                HomeUiState.Locked(apps.always, icons)
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState.Locked())
 
     fun refresh() {
         refreshes.tryEmit(Unit)
         viewModelScope.launch {
             val (loadedApps, loadedIcons) = withContext(Dispatchers.IO) {
                 val allowed = allowedApps()
-                allowed to appIcons(allowed).decodeIcons()
+                // Always allowed apps are among the allowed ones, so their icons are loaded too.
+                LoadedApps(allowed, alwaysAllowedApps()) to appIcons(allowed).decodeIcons()
             }
             icons.value = loadedIcons
             apps.value = loadedApps
@@ -81,3 +91,8 @@ class HomeViewModel(
         refresh()
     }
 }
+
+private data class LoadedApps(
+    val allowed: List<LaunchableApp> = emptyList(),
+    val always: List<LaunchableApp> = emptyList(),
+)

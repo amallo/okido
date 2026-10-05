@@ -2,8 +2,15 @@ package com.babatunde.okido.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,6 +19,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.theme.OkidoColors
@@ -31,6 +40,28 @@ fun AppIcon(app: LaunchableApp, icon: ImageBitmap?, modifier: Modifier = Modifie
         AppIconPlaceholder(app, modifier)
     } else {
         Image(bitmap = icon, contentDescription = null, modifier = modifier.clip(AppIconShape))
+    }
+}
+
+/** An app's icon and name, launched on tap; on the home grid and the time's up screen. */
+@Composable
+internal fun AppTile(app: LaunchableApp, icon: ImageBitmap?, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = 4.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        AppIcon(app, icon, modifier = Modifier.size(60.dp))
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = app.label,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
