@@ -10,20 +10,21 @@ class AppSettingsTest {
 
     @Test
     fun allowsNoAppByDefault() {
-        val appSettings = AppSettings(FakeAppCatalog(listOf(clock, youtube)), FakeAllowedAppsStore())
+        val appSettings = AppSettings(FakeAppCatalog(listOf(clock, youtube)), FakeAppAccessStore())
 
         assertEquals(
-            listOf(AppSetting(clock, allowed = false), AppSetting(youtube, allowed = false)),
+            listOf(AppSetting(clock, AppAccess.Blocked), AppSetting(youtube, AppAccess.Blocked)),
             appSettings(),
         )
     }
 
     @Test
-    fun marksAllowedApps() {
-        val appSettings = AppSettings(FakeAppCatalog(listOf(clock, youtube)), FakeAllowedAppsStore(setOf(clock.id)))
+    fun givesEachAppItsAccess() {
+        val appAccessStore = FakeAppAccessStore(mapOf(clock.id to AppAccess.Always, youtube.id to AppAccess.Timed))
+        val appSettings = AppSettings(FakeAppCatalog(listOf(clock, youtube)), appAccessStore)
 
         assertEquals(
-            listOf(AppSetting(clock, allowed = true), AppSetting(youtube, allowed = false)),
+            listOf(AppSetting(clock, AppAccess.Always), AppSetting(youtube, AppAccess.Timed)),
             appSettings(),
         )
     }

@@ -3,10 +3,11 @@ package com.babatunde.okido.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.ImageBitmap
+import com.babatunde.okido.core.AppAccess
 import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.AppSettings
-import com.babatunde.okido.core.SetAppAllowed
+import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.UnlockParentSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -29,7 +30,7 @@ class ParentSettingsViewModel(
     private val unlockParentSettings: UnlockParentSettings,
     private val appSettings: AppSettings,
     private val appIcons: AppIcons,
-    private val setAppAllowed: SetAppAllowed,
+    private val setAppAccess: SetAppAccess,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ParentSettingsUiState>(ParentSettingsUiState.PinRequired())
     val state: StateFlow<ParentSettingsUiState> = _state.asStateFlow()
@@ -52,11 +53,11 @@ class ParentSettingsViewModel(
         }
     }
 
-    fun onToggle(setting: AppSetting, allowed: Boolean) {
-        setAppAllowed(setting.app, allowed)
+    fun onAccessChange(setting: AppSetting, access: AppAccess) {
+        setAppAccess(setting.app, access)
         _state.update { state ->
             if (state !is ParentSettingsUiState.Unlocked) return@update state
-            state.copy(apps = state.apps.map { if (it.app == setting.app) it.copy(allowed = allowed) else it })
+            state.copy(apps = state.apps.map { if (it.app == setting.app) it.copy(access = access) else it })
         }
     }
 

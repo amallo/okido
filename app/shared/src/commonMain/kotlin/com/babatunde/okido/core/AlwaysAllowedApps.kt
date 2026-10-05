@@ -1,11 +1,11 @@
 package com.babatunde.okido.core
 
-class AppSettings(
+class AlwaysAllowedApps(
     private val appCatalog: AppCatalog,
     private val appAccessStore: AppAccessStore,
 ) {
-    operator fun invoke(): List<AppSetting> {
+    operator fun invoke(): List<LaunchableApp> {
         val accesses = appAccessStore.accesses()
-        return appCatalog.launchableApps().map { AppSetting(it, accesses[it.id] ?: AppAccess.Blocked) }
+        return appCatalog.launchableApps().filter { accesses[it.id] == AppAccess.Always }
     }
 }

@@ -36,20 +36,15 @@ class FakePinVerifier(private val validPin: String) : PinVerifier {
     override fun verify(pin: String): Boolean = pin == validPin
 }
 
-class FakeAllowedAppsStore(
-    allowed: Set<String> = emptySet(),
+class FakeAppAccessStore(
+    accesses: Map<String, AppAccess> = emptyMap(),
     private val unlockedUntil: Instant? = null,
-) : AllowedAppsStore {
-    private val allowed = allowed.toMutableSet()
-    override fun allowedAppIds(): Set<String> = allowed.toSet()
-    override fun allow(id: String) {
-        allowed += id
+) : AppAccessStore {
+    private val accesses = accesses.toMutableMap()
+    override fun accesses(): Map<String, AppAccess> = accesses.toMap()
+    override fun setAccess(appId: String, access: AppAccess) {
+        accesses[appId] = access
     }
-    override fun disallow(id: String) {
-        allowed -= id
-    }
-    override fun canUse(appId: String, now: Instant): Boolean {
-        val unlockedUntil = unlockedUntil ?: return false
-        return appId in allowed && now < unlockedUntil
-    }
+    override fun canUse(appId: String, now: Instant): Boolean =
+        (accesses[appId] ?: AppAccess.Blocked).isOpen(now, unlockedUntil)
 }

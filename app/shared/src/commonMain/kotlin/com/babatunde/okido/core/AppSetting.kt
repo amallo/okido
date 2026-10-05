@@ -1,3 +1,3 @@
 package com.babatunde.okido.core
 
-data class AppSetting(val app: LaunchableApp, val allowed: Boolean)
+data class AppSetting(val app: LaunchableApp, val access: AppAccess)

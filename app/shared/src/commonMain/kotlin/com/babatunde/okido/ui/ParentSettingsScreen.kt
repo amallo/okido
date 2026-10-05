@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,11 +25,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.babatunde.okido.core.AppAccess
 import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.GroupedRow
-import com.babatunde.okido.ui.components.OkidoSwitch
 import com.babatunde.okido.ui.components.PinPad
+import com.babatunde.okido.ui.components.SegmentedControl
 import com.babatunde.okido.ui.theme.OkidoTheme
 
 @Composable
@@ -36,13 +38,13 @@ fun ParentSettingsScreen(
     state: ParentSettingsUiState,
     onPinChange: (String) -> Unit = {},
     onSubmitPin: () -> Unit = {},
-    onToggle: (AppSetting, Boolean) -> Unit = { _, _ -> },
+    onAccessChange: (AppSetting, AppAccess) -> Unit = { _, _ -> },
     onClose: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         when (state) {
             is ParentSettingsUiState.PinRequired -> PinStep(state, onPinChange, onSubmitPin, onClose)
-            is ParentSettingsUiState.Unlocked -> AppsStep(state.apps, state.icons, onToggle, onClose)
+            is ParentSettingsUiState.Unlocked -> AppsStep(state.apps, state.icons, onAccessChange, onClose)
         }
     }
 }
@@ -74,7 +76,7 @@ private fun PinStep(
 private fun AppsStep(
     apps: List<AppSetting>,
     icons: Map<String, ImageBitmap>,
-    onToggle: (AppSetting, Boolean) -> Unit,
+    onAccessChange: (AppSetting, AppAccess) -> Unit,
     onClose: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize().safeContentPadding()) {
@@ -91,17 +93,18 @@ private fun AppsStep(
         LazyColumn(contentPadding = PaddingValues(vertical = 16.dp)) {
             item {
                 SectionText(
-                    text = "APPS AUTORISÉES · ${apps.count { it.allowed }} SUR ${apps.size}",
+                    text = "APPS · ${apps.count { it.access == AppAccess.Timed }} AVEC TEMPS · " +
+                        "${apps.count { it.access == AppAccess.Always }} TOUJOURS",
                     modifier = Modifier.padding(start = 32.dp, bottom = 6.dp),
                 )
             }
             // One lazy item per row, so long app lists stay smooth; the card is rebuilt from rounded ends.
             itemsIndexed(apps, key = { _, setting -> setting.app.id }) { index, setting ->
                 val isLast = index == apps.lastIndex
-                GroupedRow(
-                    label = setting.app.label,
-                    leading = { AppIcon(setting.app, icons[setting.app.id], modifier = Modifier.size(32.dp)) },
-                    trailing = { OkidoSwitch(checked = setting.allowed, onCheckedChange = { onToggle(setting, it) }) },
+                AppAccessRow(
+                    setting = setting,
+                    icon = icons[setting.app.id],
+                    onAccessChange = { onAccessChange(setting, it) },
                     showDivider = !isLast,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
@@ -111,13 +114,54 @@ private fun AppsStep(
             }
             item {
                 SectionText(
-                    text = "Les apps non autorisées n'apparaissent pas sur l'accueil " +
-                        "et sont bloquées, même pendant le temps accordé.",
+                    text = "Avec temps : utilisable pendant le temps accordé. " +
+                        "Toujours : utilisable même quand le temps est écoulé, comme la radio. " +
+                        "Bloquée : n'apparaît pas sur l'accueil.",
                     modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 6.dp),
                 )
             }
         }
     }
+}
+
+private val accessOptions = listOf(AppAccess.Blocked, AppAccess.Timed, AppAccess.Always)
+
+/** An app row with its access below, aligned with the label like an iOS subtitle. */
+@Composable
+private fun AppAccessRow(
+    setting: AppSetting,
+    icon: ImageBitmap?,
+    onAccessChange: (AppAccess) -> Unit,
+    showDivider: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        GroupedRow(
+            label = setting.app.label,
+            leading = { AppIcon(setting.app, icon, modifier = Modifier.size(32.dp)) },
+            showDivider = false,
+        )
+        SegmentedControl(
+            options = accessOptions,
+            selected = setting.access,
+            onSelect = onAccessChange,
+            label = { it.label() },
+            modifier = Modifier.padding(start = 60.dp, end = 16.dp, bottom = 12.dp),
+        )
+        if (showDivider) {
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 60.dp),
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+        }
+    }
+}
+
+private fun AppAccess.label(): String = when (this) {
+    AppAccess.Blocked -> "Bloquée"
+    AppAccess.Timed -> "Avec temps"
+    AppAccess.Always -> "Toujours"
 }
 
 @Composable
@@ -143,8 +187,9 @@ private fun AppsPreview() {
         ParentSettingsScreen(
             state = ParentSettingsUiState.Unlocked(
                 listOf(
-                    AppSetting(LaunchableApp(id = "com.example.camera", label = "Appareil photo"), allowed = false),
-                    AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), allowed = true),
+                    AppSetting(LaunchableApp(id = "com.example.camera", label = "Appareil photo"), AppAccess.Blocked),
+                    AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), AppAccess.Timed),
+                    AppSetting(LaunchableApp(id = "com.example.radio", label = "Radio"), AppAccess.Always),
                 ),
             ),
         )

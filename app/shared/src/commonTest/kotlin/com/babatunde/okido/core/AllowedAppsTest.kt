@@ -10,15 +10,25 @@ class AllowedAppsTest {
 
     @Test
     fun listsNoAppByDefault() {
-        val allowedApps = AllowedApps(FakeAppCatalog(listOf(clock, youtube)), FakeAllowedAppsStore())
+        val allowedApps = AllowedApps(FakeAppCatalog(listOf(clock, youtube)), FakeAppAccessStore())
 
         assertEquals(emptyList(), allowedApps())
     }
 
     @Test
     fun listsOnlyAllowedApps() {
-        val allowedApps = AllowedApps(FakeAppCatalog(listOf(clock, youtube)), FakeAllowedAppsStore(setOf(youtube.id)))
+        val appAccessStore = FakeAppAccessStore(mapOf(youtube.id to AppAccess.Timed))
+        val allowedApps = AllowedApps(FakeAppCatalog(listOf(clock, youtube)), appAccessStore)
 
         assertEquals(listOf(youtube), allowedApps())
+    }
+
+    @Test
+    fun listsTimedAndAlwaysAllowedApps() {
+        val radio = LaunchableApp(id = "fr.radiofrance.app", label = "Radio")
+        val accesses = mapOf(youtube.id to AppAccess.Timed, radio.id to AppAccess.Always, clock.id to AppAccess.Blocked)
+        val allowedApps = AllowedApps(FakeAppCatalog(listOf(clock, youtube, radio)), FakeAppAccessStore(accesses))
+
+        assertEquals(listOf(youtube, radio), allowedApps())
     }
 }

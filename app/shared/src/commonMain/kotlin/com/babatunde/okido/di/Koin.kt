@@ -1,6 +1,7 @@
 package com.babatunde.okido.di
 
 import com.babatunde.okido.core.AllowedApps
+import com.babatunde.okido.core.AlwaysAllowedApps
 import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.EndExtraTime
@@ -8,7 +9,7 @@ import com.babatunde.okido.core.GrantExtraTime
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LockNow
 import com.babatunde.okido.core.RemainingTime
-import com.babatunde.okido.core.SetAppAllowed
+import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.UnlockParentSettings
 import com.babatunde.okido.infra.infraModule
 import com.babatunde.okido.ui.uiModule
@@ -26,8 +27,9 @@ val coreModule = module {
     factoryOf(::LockNow)
     factoryOf(::UnlockParentSettings)
     factoryOf(::AppSettings)
-    factoryOf(::SetAppAllowed)
+    factoryOf(::SetAppAccess)
     factoryOf(::AllowedApps)
+    factoryOf(::AlwaysAllowedApps)
 }
 
 fun initKoin(config: KoinAppDeclaration) {

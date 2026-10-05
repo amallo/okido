@@ -49,7 +49,7 @@ fun App(
                 state = parentSettings,
                 onPinChange = parentSettingsViewModel::onPinChange,
                 onSubmitPin = parentSettingsViewModel::onSubmitPin,
-                onToggle = parentSettingsViewModel::onToggle,
+                onAccessChange = parentSettingsViewModel::onAccessChange,
                 onClose = ::closeParentSettings,
             )
             return@OkidoTheme
