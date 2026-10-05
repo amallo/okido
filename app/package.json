@@ -1,0 +1,12 @@
+{
+  "name": "app",
+  "private": true,
+  "scripts": {
+    "build": "./gradlew build",
+    "android": "./gradlew :androidApp:assembleDebug",
+    "ios": "open iosApp/iosApp.xcodeproj",
+    "test": "./gradlew :shared:testAndroidHostTest",
+    "test:ios": "./gradlew :shared:iosSimulatorArm64Test",
+    "clean": "./gradlew clean"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "okido",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "app:build": "pnpm --filter app build",
+    "app:android": "pnpm --filter app android",
+    "app:test": "pnpm --filter app test",
+    "app:clean": "pnpm --filter app clean"
+  }
+}
