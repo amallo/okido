@@ -20,12 +20,16 @@ class FakeScreenLocker : ScreenLocker {
     }
 }
 
-class FakeAppCatalog(private val apps: List<LaunchableApp> = emptyList()) : AppCatalog {
+class FakeAppCatalog(
+    private val apps: List<LaunchableApp> = emptyList(),
+    private val icons: Map<String, ByteArray> = emptyMap(),
+) : AppCatalog {
     val launched = mutableListOf<LaunchableApp>()
     override fun launchableApps(): List<LaunchableApp> = apps
     override fun launch(app: LaunchableApp) {
         launched += app
     }
+    override fun icon(app: LaunchableApp): ByteArray? = icons[app.id]
 }
 
 class FakePinVerifier(private val validPin: String) : PinVerifier {

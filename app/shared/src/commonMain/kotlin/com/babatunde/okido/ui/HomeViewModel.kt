@@ -2,7 +2,9 @@ package com.babatunde.okido.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.ui.graphics.ImageBitmap
 import com.babatunde.okido.core.AllowedApps
+import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.core.LockNow
@@ -26,16 +28,22 @@ import kotlin.time.Duration.Companion.seconds
 
 sealed interface HomeUiState {
     data object Locked : HomeUiState
-    data class Unlocked(val apps: List<LaunchableApp>, val remaining: Duration) : HomeUiState
+    data class Unlocked(
+        val apps: List<LaunchableApp>,
+        val remaining: Duration,
+        val icons: Map<String, ImageBitmap> = emptyMap(),
+    ) : HomeUiState
 }
 
 class HomeViewModel(
     private val remainingTime: RemainingTime,
     private val allowedApps: AllowedApps,
+    private val appIcons: AppIcons,
     private val launchApp: LaunchApp,
     private val lockNow: LockNow,
 ) : ViewModel() {
     private val apps = MutableStateFlow<List<LaunchableApp>>(emptyList())
+    private val icons = MutableStateFlow<Map<String, ImageBitmap>>(emptyMap())
     private val refreshes = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     // Ticks only while the UI collects the state, so nothing runs when Okido is in the background.
@@ -47,14 +55,19 @@ class HomeViewModel(
     }
 
     val state: StateFlow<HomeUiState> =
-        combine(merge(ticks, refreshes).map { remainingTime() }, apps) { remaining, apps ->
-            if (remaining > Duration.ZERO) HomeUiState.Unlocked(apps, remaining) else HomeUiState.Locked
+        combine(merge(ticks, refreshes).map { remainingTime() }, apps, icons) { remaining, apps, icons ->
+            if (remaining > Duration.ZERO) HomeUiState.Unlocked(apps, remaining, icons) else HomeUiState.Locked
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState.Locked)
 
     fun refresh() {
         refreshes.tryEmit(Unit)
         viewModelScope.launch {
-            apps.value = withContext(Dispatchers.IO) { allowedApps() }
+            val (loadedApps, loadedIcons) = withContext(Dispatchers.IO) {
+                val allowed = allowedApps()
+                allowed to appIcons(allowed).decodeIcons()
+            }
+            icons.value = loadedIcons
+            apps.value = loadedApps
         }
     }
 

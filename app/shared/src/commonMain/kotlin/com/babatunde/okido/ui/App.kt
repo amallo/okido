@@ -76,6 +76,7 @@ fun App(
                 HomeScreen(
                     apps = state.apps,
                     remaining = state.remaining,
+                    icons = state.icons,
                     onLaunch = homeViewModel::onLaunch,
                     onMoreTime = { askingMoreTime = true },
                     onLockNow = homeViewModel::onLockNow,

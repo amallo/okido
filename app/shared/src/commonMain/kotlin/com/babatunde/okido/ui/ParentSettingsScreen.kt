@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun ParentSettingsScreen(
     Surface(modifier = Modifier.fillMaxSize()) {
         when (state) {
             is ParentSettingsUiState.PinRequired -> PinStep(state, onPinChange, onSubmitPin, onClose)
-            is ParentSettingsUiState.Unlocked -> AppsStep(state.apps, onToggle, onClose)
+            is ParentSettingsUiState.Unlocked -> AppsStep(state.apps, state.icons, onToggle, onClose)
         }
     }
 }
@@ -72,6 +73,7 @@ private fun PinStep(
 @Composable
 private fun AppsStep(
     apps: List<AppSetting>,
+    icons: Map<String, ImageBitmap>,
     onToggle: (AppSetting, Boolean) -> Unit,
     onClose: () -> Unit,
 ) {
@@ -98,7 +100,7 @@ private fun AppsStep(
                 val isLast = index == apps.lastIndex
                 GroupedRow(
                     label = setting.app.label,
-                    leading = { AppIcon(setting.app, modifier = Modifier.size(32.dp)) },
+                    leading = { AppIcon(setting.app, icons[setting.app.id], modifier = Modifier.size(32.dp)) },
                     trailing = { OkidoSwitch(checked = setting.allowed, onCheckedChange = { onToggle(setting, it) }) },
                     showDivider = !isLast,
                     modifier = Modifier

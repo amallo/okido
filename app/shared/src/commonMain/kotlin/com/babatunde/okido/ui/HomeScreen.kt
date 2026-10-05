@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +45,7 @@ import kotlin.time.Duration.Companion.minutes
 fun HomeScreen(
     apps: List<LaunchableApp>,
     remaining: Duration,
+    icons: Map<String, ImageBitmap> = emptyMap(),
     onLaunch: (LaunchableApp) -> Unit = {},
     onMoreTime: () -> Unit = {},
     onLockNow: () -> Unit = {},
@@ -90,7 +92,7 @@ fun HomeScreen(
                     )
                 }
             }
-            items(apps, key = { it.id }) { app -> AppTile(app, onClick = { onLaunch(app) }) }
+            items(apps, key = { it.id }) { app -> AppTile(app, icons[app.id], onClick = { onLaunch(app) }) }
             item(key = "add") { AddAppTile(onClick = onParentSettings) }
             fullWidth {
                 GroupedSection(modifier = Modifier.padding(top = 8.dp)) {
@@ -121,7 +123,7 @@ private fun LazyGridScope.fullWidth(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun AppTile(app: LaunchableApp, onClick: () -> Unit) {
+private fun AppTile(app: LaunchableApp, icon: ImageBitmap?, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(horizontal = 4.dp)
@@ -130,7 +132,7 @@ private fun AppTile(app: LaunchableApp, onClick: () -> Unit) {
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppIcon(app, modifier = Modifier.size(60.dp))
+        AppIcon(app, icon, modifier = Modifier.size(60.dp))
         Spacer(Modifier.height(6.dp))
         Text(
             text = app.label,

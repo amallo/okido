@@ -2,6 +2,8 @@ package com.babatunde.okido.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.ui.graphics.ImageBitmap
+import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.SetAppAllowed
@@ -17,12 +19,16 @@ import kotlinx.coroutines.withContext
 
 sealed interface ParentSettingsUiState {
     data class PinRequired(val pin: String = "", val invalidPin: Boolean = false) : ParentSettingsUiState
-    data class Unlocked(val apps: List<AppSetting>) : ParentSettingsUiState
+    data class Unlocked(
+        val apps: List<AppSetting>,
+        val icons: Map<String, ImageBitmap> = emptyMap(),
+    ) : ParentSettingsUiState
 }
 
 class ParentSettingsViewModel(
     private val unlockParentSettings: UnlockParentSettings,
     private val appSettings: AppSettings,
+    private val appIcons: AppIcons,
     private val setAppAllowed: SetAppAllowed,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ParentSettingsUiState>(ParentSettingsUiState.PinRequired())
@@ -39,8 +45,10 @@ class ParentSettingsViewModel(
             return
         }
         viewModelScope.launch {
-            val apps = withContext(Dispatchers.IO) { appSettings() }
-            _state.value = ParentSettingsUiState.Unlocked(apps)
+            _state.value = withContext(Dispatchers.IO) {
+                val apps = appSettings()
+                ParentSettingsUiState.Unlocked(apps, appIcons(apps.map { it.app }).decodeIcons())
+            }
         }
     }
 
