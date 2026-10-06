@@ -20,6 +20,7 @@ data class OnboardingUiState(
     val pin: String = "",
     val chosenPin: String = "",
     val mismatch: Boolean = false,
+    val blockingDeclined: Boolean = false,
 )
 
 class OnboardingViewModel(
@@ -75,7 +76,14 @@ class OnboardingViewModel(
         }
     }
 
-    fun onOpenSettings() = openBlockingSettings()
+    fun onOpenSettings() {
+        _state.update { it.copy(blockingDeclined = false) }
+        openBlockingSettings()
+    }
+
+    fun onDecline() {
+        _state.update { it.copy(blockingDeclined = true) }
+    }
 
     /** Keeps the parent on their introduction page until the PIN exists, then follows the core. */
     private fun nextPage(current: OnboardingPage): OnboardingPage = when (nextOnboardingStep()) {

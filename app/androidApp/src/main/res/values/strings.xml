@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Okido</string>
-    <string name="accessibility_description">Okido ramène l\'enfant sur l\'écran d\'accueil quand le temps est écoulé.</string>
+    <string name="accessibility_description">Okido lit uniquement le nom de l\'app affichée pour fermer celles que le parent n\'a pas autorisées. Rien n\'est enregistré ni envoyé.</string>
 </resources>

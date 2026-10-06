@@ -55,6 +55,7 @@ fun App(
                 onPinChange = onboardingViewModel::onPinChange,
                 onSubmitPin = onboardingViewModel::onSubmitPin,
                 onOpenSettings = onboardingViewModel::onOpenSettings,
+                onDecline = onboardingViewModel::onDecline,
             )
             return@OkidoTheme
         }

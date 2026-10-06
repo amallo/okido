@@ -46,6 +46,7 @@ fun OnboardingScreen(
     onPinChange: (String) -> Unit = {},
     onSubmitPin: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onDecline: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize().safeContentPadding()) {
@@ -99,12 +100,22 @@ fun OnboardingScreen(
                     OnboardingPage.EnableBlocking -> InfoPage(
                         icon = Res.drawable.accessibility,
                         iconColor = OkidoColors.Blue,
-                        title = "Active le blocage",
-                        body = "Okido utilise le service d'accessibilité pour savoir quelle app est ouverte " +
-                            "et fermer celles qui ne sont pas autorisées. Rien ne quitte le téléphone.\n\n" +
-                            "Dans les réglages, touche « Okido » puis active le service.",
-                        action = "Ouvrir les réglages",
+                        title = "Autoriser Okido à bloquer les apps",
+                        body = "Pour bloquer les apps non autorisées, Okido utilise le service d'accessibilité " +
+                            "d'Android. Il lit uniquement le nom de l'app affichée à l'écran, pour la comparer " +
+                            "à ta liste d'apps autorisées et fermer celles qui ne le sont pas.\n\n" +
+                            "Okido ne lit pas le contenu de l'écran ni ce qui est tapé. Rien n'est enregistré " +
+                            "ni envoyé : tout reste sur ce téléphone.\n\n" +
+                            "Si tu acceptes, les réglages d'Android s'ouvrent : touche « Okido » puis active le service.",
+                        action = "J'accepte",
                         onAction = onOpenSettings,
+                        secondaryAction = "Refuser",
+                        onSecondaryAction = onDecline,
+                        note = if (state.blockingDeclined) {
+                            "Sans ce service, Okido ne peut pas bloquer les apps. Tu peux accepter quand tu veux."
+                        } else {
+                            null
+                        },
                     )
                     OnboardingPage.Done -> Unit
                 }
@@ -146,6 +157,9 @@ private fun InfoPage(
     action: String,
     onAction: () -> Unit,
     iconTint: Color = Color.White,
+    secondaryAction: String? = null,
+    onSecondaryAction: () -> Unit = {},
+    note: String? = null,
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
@@ -180,6 +194,19 @@ private fun InfoPage(
         ) {
             Text(action, style = MaterialTheme.typography.titleMedium)
         }
+        if (secondaryAction != null) {
+            TextButton(onClick = onSecondaryAction, modifier = Modifier.fillMaxWidth()) {
+                Text(secondaryAction, style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+        if (note != null) {
+            Text(
+                text = note,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+        }
         Spacer(Modifier.height(16.dp))
     }
 }
@@ -206,4 +233,10 @@ private fun CreatePinPreview() {
 @Preview
 private fun EnableBlockingPreview() {
     OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.EnableBlocking)) }
+}
+
+@Composable
+@Preview
+private fun BlockingDeclinedPreview() {
+    OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.EnableBlocking, blockingDeclined = true)) }
 }
