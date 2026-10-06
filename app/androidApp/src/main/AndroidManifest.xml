@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -34,10 +32,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <receiver
-            android:exported="false"
-            android:name="com.babatunde.okido.infra.ExtraTimeEndedReceiver" />
 
         <service
             android:exported="false"

@@ -7,12 +7,10 @@ import com.babatunde.okido.core.providers.AppCatalog
 import com.babatunde.okido.core.providers.AppIconLoader
 import com.babatunde.okido.core.providers.BlockingService
 import com.babatunde.okido.core.providers.Clock
-import com.babatunde.okido.core.providers.ExtraTimeScheduler
 import com.babatunde.okido.core.providers.OnboardingStore
 import com.babatunde.okido.core.providers.ParentPin
 import com.babatunde.okido.core.providers.ScreenLocker
 import com.babatunde.okido.infra.providers.AccessibilityBlockingService
-import com.babatunde.okido.infra.providers.AlarmManagerExtraTimeScheduler
 import com.babatunde.okido.infra.providers.DeviceClock
 import com.babatunde.okido.infra.providers.HomeScreenLocker
 import com.babatunde.okido.infra.providers.PackageManagerAppIconLoader
@@ -30,7 +28,6 @@ actual val infraModule = module {
     single<Clock> { DeviceClock() }
     single<AccessStore> { SharedPreferencesAccessStore(get()) }
     single<AppAccessStore> { SharedPreferencesAppAccessStore(get(), get()) }
-    single<ExtraTimeScheduler> { AlarmManagerExtraTimeScheduler(androidContext()) }
     single<ScreenLocker> { HomeScreenLocker(androidContext()) }
     single<AppCatalog> { PackageManagerAppCatalog(androidContext()) }
     single<AppIconLoader> { PackageManagerAppIconLoader(androidContext()) }

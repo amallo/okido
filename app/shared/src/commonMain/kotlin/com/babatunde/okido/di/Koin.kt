@@ -5,7 +5,6 @@ import com.babatunde.okido.core.AlwaysAllowedApps
 import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.ChangeParentPin
 import com.babatunde.okido.core.CreateParentPin
-import com.babatunde.okido.core.EndExtraTime
 import com.babatunde.okido.core.GrantExtraTime
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LockNow
@@ -23,7 +22,6 @@ import org.koin.dsl.module
 
 val coreModule = module {
     factoryOf(::GrantExtraTime)
-    factoryOf(::EndExtraTime)
     factoryOf(::LaunchApp)
     factoryOf(::RemainingTime)
     factoryOf(::LockNow)
