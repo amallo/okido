@@ -6,6 +6,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
 import com.babatunde.okido.core.providers.AppAccessStore
+import com.babatunde.okido.core.providers.AppCatalog
 import com.babatunde.okido.core.providers.Clock
 import com.babatunde.okido.core.providers.ScreenLocker
 import kotlin.time.Duration.Companion.seconds
@@ -14,6 +15,7 @@ import org.koin.core.component.inject
 
 class OkidoAccessibilityService : AccessibilityService(), KoinComponent {
     private val appAccessStore: AppAccessStore by inject()
+    private val appCatalog: AppCatalog by inject()
     private val clock: Clock by inject()
     private val screenLocker: ScreenLocker by inject()
 
@@ -42,7 +44,7 @@ class OkidoAccessibilityService : AccessibilityService(), KoinComponent {
         val packageName = event.packageName?.toString() ?: return
         // The keyboard and screens without a launcher icon (system UI, Google sign-in, permission and
         // share dialogs) show over the app in front, which stays the one to check.
-        if (packageName != this.packageName && (!hasLauncherIcon(packageName) || packageName == keyboardPackage())) return
+        if (packageName != this.packageName && (!appCatalog.isLaunchable(packageName) || packageName == keyboardPackage())) return
         foregroundPackage = packageName
         lockIfNotAllowed(packageName)
     }
@@ -53,9 +55,6 @@ class OkidoAccessibilityService : AccessibilityService(), KoinComponent {
         if (packageName == this.packageName) return
         if (!appAccessStore.canUse(packageName, clock.now())) screenLocker.lock()
     }
-
-    private fun hasLauncherIcon(packageName: String): Boolean =
-        packageManager.getLaunchIntentForPackage(packageName) != null
 
     private fun keyboardPackage(): String? =
         Settings.Secure.getString(contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD)?.substringBefore('/')

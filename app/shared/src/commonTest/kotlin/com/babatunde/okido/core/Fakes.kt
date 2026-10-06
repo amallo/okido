@@ -36,6 +36,7 @@ class FakeAppCatalog(
     override fun launch(app: LaunchableApp) {
         launched += app
     }
+    override fun isLaunchable(appId: String): Boolean = apps.any { it.id == appId }
 }
 
 class FakeParentPin(private var pin: String? = null) : ParentPin {

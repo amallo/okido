@@ -22,4 +22,6 @@ class PackageManagerAppCatalog(private val context: Context) : AppCatalog {
         context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
+    override fun isLaunchable(appId: String): Boolean =
+        context.packageManager.getLaunchIntentForPackage(appId) != null
 }
