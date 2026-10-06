@@ -1,0 +1,31 @@
+name: Release Android
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # versionCode counts commits, versionName reads the tag
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Restore upload key
+        run: echo "${{ secrets.OKIDO_KEYSTORE_BASE64 }}" | base64 --decode > upload.jks
+      - name: Test, build and upload to the internal track
+        env:
+          OKIDO_KEYSTORE_PATH: upload.jks
+          OKIDO_KEYSTORE_PASSWORD: ${{ secrets.OKIDO_KEYSTORE_PASSWORD }}
+          OKIDO_KEY_ALIAS: ${{ secrets.OKIDO_KEY_ALIAS }}
+          OKIDO_KEY_PASSWORD: ${{ secrets.OKIDO_KEY_PASSWORD }}
+          ANDROID_PUBLISHER_CREDENTIALS: ${{ secrets.ANDROID_PUBLISHER_CREDENTIALS }}
+        run: ./gradlew :shared:testAndroidHostTest :androidApp:publishBundle

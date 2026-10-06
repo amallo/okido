@@ -1,9 +1,23 @@
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.playPublisher)
 }
+
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+
+/** A release secret, from the environment (CI) or from the untracked local.properties. */
+fun secret(name: String): String? = System.getenv(name) ?: localProperties.getProperty(name)
+
+fun git(vararg args: String): String? = providers.exec {
+    commandLine("git", *args)
+    isIgnoreExitValue = true
+}.standardOutput.asText.get().trim().ifEmpty { null }
 
 kotlin {
     compilerOptions {
@@ -29,8 +43,16 @@ android {
         applicationId = "com.babatunde.okido"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = git("rev-list", "--count", "HEAD")?.toInt() ?: 1
+        versionName = git("describe", "--tags", "--abbrev=0", "--match", "v*")?.removePrefix("v") ?: "0.1.0"
+    }
+    signingConfigs {
+        create("release") {
+            secret("OKIDO_KEYSTORE_PATH")?.let { storeFile = rootProject.file(it) }
+            storePassword = secret("OKIDO_KEYSTORE_PASSWORD")
+            keyAlias = secret("OKIDO_KEY_ALIAS")
+            keyPassword = secret("OKIDO_KEY_PASSWORD")
+        }
     }
     packaging {
         resources {
@@ -39,6 +61,7 @@ android {
     }
     buildTypes {
         release {
+            if (secret("OKIDO_KEYSTORE_PATH") != null) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -54,4 +77,10 @@ android {
         compose = true
         buildConfig = true
     }
+}
+
+// Uploads with the service account JSON given in ANDROID_PUBLISHER_CREDENTIALS.
+play {
+    track = "internal"
+    defaultToAppBundles = true
 }
