@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
@@ -35,10 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.ui.components.Companion
 import com.babatunde.okido.ui.components.GroupedRow
 import com.babatunde.okido.ui.components.GroupedSection
-import com.babatunde.okido.ui.components.TimeRing
-import com.babatunde.okido.ui.components.remainingMinutes
 import com.babatunde.okido.ui.theme.OkidoTheme
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -47,6 +45,7 @@ import kotlin.time.Duration.Companion.minutes
 fun HomeScreen(
     apps: List<LaunchableApp>,
     remaining: Duration,
+    sleepiness: Float = 0f,
     icons: Map<String, ImageBitmap> = emptyMap(),
     onLaunch: (LaunchableApp) -> Unit = {},
     onMoreTime: () -> Unit = {},
@@ -73,6 +72,12 @@ fun HomeScreen(
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                // Scrolls away with the apps, so it never takes room from them.
+                fullWidth {
+                    Box(Modifier.fillMaxWidth().padding(bottom = 8.dp), contentAlignment = Alignment.Center) {
+                        Companion(sleepiness = sleepiness, modifier = Modifier.size(140.dp))
+                    }
+                }
                 items(apps, key = { it.id }) { app -> AppTile(app, icons[app.id], onClick = { onLaunch(app) }) }
                 item(key = "add") { AddAppTile(onClick = onParentSettings) }
                 if (apps.isEmpty()) {
@@ -107,20 +112,24 @@ fun HomeScreen(
     }
 }
 
-/** Remaining time as a small ring and the minutes left, like a status chip. */
+/** The minutes left, like a status chip. The companion's sand shows the rest. */
 @Composable
 private fun TimePill(remaining: Duration) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(percent = 50))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(start = 6.dp, end = 14.dp, top = 6.dp, bottom = 6.dp),
+            .padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TimeRing(remaining = remaining, size = 32.dp, strokeWidth = 5.dp, showLabel = false)
-        Spacer(Modifier.width(8.dp))
         Text("${remainingMinutes(remaining)} min", style = MaterialTheme.typography.titleMedium)
     }
+}
+
+/** Minutes left, rounded up, as shown to the child: "< 1" in the last minute. */
+private fun remainingMinutes(remaining: Duration): String {
+    val minutes = (remaining.inWholeSeconds + 59) / 60
+    return if (minutes <= 1) "< 1" else "$minutes"
 }
 
 private fun LazyGridScope.fullWidth(content: @Composable () -> Unit) {
@@ -166,6 +175,7 @@ private fun HomePreview() {
                 LaunchableApp(id = "com.example.clock", label = "Horloge"),
             ),
             remaining = 25.minutes,
+            sleepiness = 0.6f,
         )
     }
 }

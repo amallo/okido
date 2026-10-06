@@ -11,6 +11,7 @@ import com.babatunde.okido.core.LockNow
 import com.babatunde.okido.core.NextOnboardingStep
 import com.babatunde.okido.core.OpenBlockingSettings
 import com.babatunde.okido.core.RemainingTime
+import com.babatunde.okido.core.SessionProgress
 import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.UnlockParentSettings
 import com.babatunde.okido.infra.infraModule
@@ -24,6 +25,7 @@ val coreModule = module {
     factoryOf(::GrantExtraTime)
     factoryOf(::LaunchApp)
     factoryOf(::RemainingTime)
+    factoryOf(::SessionProgress)
     factoryOf(::LockNow)
     factoryOf(::UnlockParentSettings)
     factoryOf(::AppSettings)

@@ -10,6 +10,7 @@ import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.core.providers.AppIconLoader
 import com.babatunde.okido.core.LockNow
 import com.babatunde.okido.core.RemainingTime
+import com.babatunde.okido.core.SessionProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
@@ -35,12 +36,15 @@ sealed interface HomeUiState {
     data class Unlocked(
         val apps: List<LaunchableApp>,
         val remaining: Duration,
+        /** How sleepy the companion is: the share of the granted time already used, from 0 to 1. */
+        val sleepiness: Float = 0f,
         val icons: Map<String, ImageBitmap> = emptyMap(),
     ) : HomeUiState
 }
 
 class HomeViewModel(
     private val remainingTime: RemainingTime,
+    private val sessionProgress: SessionProgress,
     private val allowedApps: AllowedApps,
     private val alwaysAllowedApps: AlwaysAllowedApps,
     private val appIconLoader: AppIconLoader,
@@ -60,9 +64,9 @@ class HomeViewModel(
     }
 
     val state: StateFlow<HomeUiState> =
-        combine(merge(ticks, refreshes).map { remainingTime() }, apps, icons) { remaining, apps, icons ->
+        combine(merge(ticks, refreshes).map { remainingTime() to sessionProgress() }, apps, icons) { (remaining, progress), apps, icons ->
             if (remaining > Duration.ZERO) {
-                HomeUiState.Unlocked(apps.allowed, remaining, icons)
+                HomeUiState.Unlocked(apps.allowed, remaining, progress.toFloat(), icons)
             } else {
                 HomeUiState.Locked(apps.always, icons)
             }
