@@ -61,7 +61,8 @@ fun OnboardingScreen(
                 when (state.page) {
                     OnboardingPage.Welcome -> InfoPage(
                         icon = Res.drawable.hourglass,
-                        iconColor = OkidoColors.Indigo,
+                        iconColor = Color.White,
+                        iconTint = Color.Unspecified,
                         title = "Bienvenue sur Okido",
                         body = "Choisis les apps de ton enfant et le temps à y passer. " +
                             "Quand le temps est écoulé, l'écran se verrouille jusqu'à ce que tu en accordes plus.",
@@ -144,6 +145,7 @@ private fun InfoPage(
     body: String,
     action: String,
     onAction: () -> Unit,
+    iconTint: Color = Color.White,
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
@@ -157,7 +159,7 @@ private fun InfoPage(
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-                tint = Color.White,
+                tint = iconTint,
                 modifier = Modifier.size(52.dp),
             )
         }

@@ -38,7 +38,6 @@ import com.babatunde.okido.core.GrantExtraTimeResult
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.PinPad
 import com.babatunde.okido.ui.components.SegmentedControl
-import com.babatunde.okido.ui.theme.OkidoColors
 import com.babatunde.okido.ui.theme.OkidoTheme
 import okido.shared.generated.resources.Res
 import okido.shared.generated.resources.hourglass
@@ -110,13 +109,13 @@ private fun TimeUpStep(
     ) {
         Spacer(Modifier.weight(1f))
         Box(
-            modifier = Modifier.size(96.dp).background(OkidoColors.Indigo, CircleShape),
+            modifier = Modifier.size(96.dp).background(Color.White, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(Res.drawable.hourglass),
                 contentDescription = null,
-                tint = Color.White,
+                tint = Color.Unspecified,
                 modifier = Modifier.size(52.dp),
             )
         }
