@@ -18,3 +18,8 @@ class GrantExtraTime(
         return GrantExtraTimeResult.Granted
     }
 }
+
+sealed interface GrantExtraTimeResult {
+    data object Granted : GrantExtraTimeResult
+    data object InvalidPin : GrantExtraTimeResult
+}

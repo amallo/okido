@@ -10,3 +10,9 @@ class CreateParentPin(private val parentPin: ParentPin) {
         return CreateParentPinResult.Created
     }
 }
+
+sealed interface CreateParentPinResult {
+    data object Created : CreateParentPinResult
+    data object Mismatch : CreateParentPinResult
+    data object AlreadySet : CreateParentPinResult
+}

@@ -10,3 +10,9 @@ class ChangeParentPin(private val parentPin: ParentPin) {
         return ChangeParentPinResult.Changed
     }
 }
+
+sealed interface ChangeParentPinResult {
+    data object Changed : ChangeParentPinResult
+    data object InvalidPin : ChangeParentPinResult
+    data object Mismatch : ChangeParentPinResult
+}
