@@ -32,6 +32,26 @@ class GrantExtraTimeTest {
     }
 
     @Test
+    fun startsASessionWhenLocked() {
+        val accessStore = FakeAccessStore()
+        val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), accessStore, FakeClock(now))
+
+        grantExtraTime(pin = "1234", duration = 15.minutes)
+
+        assertEquals(now, accessStore.sessionStart())
+    }
+
+    @Test
+    fun keepsTheSessionStartWhenStillUnlocked() {
+        val accessStore = FakeAccessStore(unlockedUntil = now + 5.minutes, sessionStart = now - 10.minutes)
+        val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), accessStore, FakeClock(now))
+
+        grantExtraTime(pin = "1234", duration = 15.minutes)
+
+        assertEquals(now - 10.minutes, accessStore.sessionStart())
+    }
+
+    @Test
     fun grantsNothingWhenPinIsInvalid() {
         val accessStore = FakeAccessStore()
         val grantExtraTime = GrantExtraTime(FakeParentPin("1234"), accessStore, FakeClock(now))

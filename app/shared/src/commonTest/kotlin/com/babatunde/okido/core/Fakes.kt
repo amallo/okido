@@ -10,10 +10,17 @@ import com.babatunde.okido.core.providers.ParentPin
 import com.babatunde.okido.core.providers.ScreenLocker
 import kotlin.time.Instant
 
-class FakeAccessStore(private var unlockedUntil: Instant? = null) : AccessStore {
+class FakeAccessStore(
+    private var unlockedUntil: Instant? = null,
+    private var sessionStart: Instant? = null,
+) : AccessStore {
     override fun unlockedUntil(): Instant? = unlockedUntil
     override fun unlockUntil(instant: Instant) {
         unlockedUntil = instant
+    }
+    override fun sessionStart(): Instant? = sessionStart
+    override fun startSession(instant: Instant) {
+        sessionStart = instant
     }
 }
 

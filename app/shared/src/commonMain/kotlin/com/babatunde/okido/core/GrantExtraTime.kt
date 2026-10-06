@@ -13,8 +13,9 @@ class GrantExtraTime(
     operator fun invoke(pin: String, duration: Duration): GrantExtraTimeResult {
         if (!parentPin.verify(pin)) return GrantExtraTimeResult.InvalidPin
         val now = clock.now()
-        val start = maxOf(now, accessStore.unlockedUntil() ?: now)
-        accessStore.unlockUntil(start + duration)
+        val unlockedUntil = accessStore.unlockedUntil()
+        if (unlockedUntil == null || unlockedUntil <= now) accessStore.startSession(now)
+        accessStore.unlockUntil(maxOf(now, unlockedUntil ?: now) + duration)
         return GrantExtraTimeResult.Granted
     }
 }
