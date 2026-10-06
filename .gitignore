@@ -1,3 +1,7 @@
 node_modules/
 .DS_Store
 .idea/
+
+# Google service account keys
+api-*.json
+*service-account*.json
