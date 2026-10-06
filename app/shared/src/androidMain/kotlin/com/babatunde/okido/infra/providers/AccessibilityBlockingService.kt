@@ -1,10 +1,11 @@
-package com.babatunde.okido.infra
+package com.babatunde.okido.infra.providers
 
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import com.babatunde.okido.core.BlockingService
+import com.babatunde.okido.core.providers.BlockingService
+import com.babatunde.okido.infra.OkidoAccessibilityService
 
 /** Blocking relies on [OkidoAccessibilityService], which only the parent can turn on in Android settings. */
 class AccessibilityBlockingService(private val context: Context) : BlockingService {

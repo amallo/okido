@@ -1,5 +1,9 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.BlockingService
+import com.babatunde.okido.core.providers.OnboardingStore
+import com.babatunde.okido.core.providers.ParentPin
+
 class NextOnboardingStep(
     private val onboardingStore: OnboardingStore,
     private val parentPin: ParentPin,

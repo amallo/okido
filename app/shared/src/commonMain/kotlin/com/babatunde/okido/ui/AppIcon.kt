@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.core.providers.AppIconLoader
 import com.babatunde.okido.ui.theme.OkidoColors
 import kotlin.math.absoluteValue
 import org.jetbrains.compose.resources.decodeToImageBitmap
@@ -65,9 +66,11 @@ internal fun AppTile(app: LaunchableApp, icon: ImageBitmap?, onClick: () -> Unit
     }
 }
 
-/** Decodes the PNG icons given by the core; an icon that fails to decode falls back to the placeholder. */
-fun Map<String, ByteArray>.decodeIcons(): Map<String, ImageBitmap> =
-    mapNotNull { (id, png) -> runCatching { png.decodeToImageBitmap() }.getOrNull()?.let { id to it } }.toMap()
+/** Loads and decodes each app's icon; a missing or undecodable icon falls back to the placeholder. */
+fun AppIconLoader.decodeIcons(apps: List<LaunchableApp>): Map<String, ImageBitmap> =
+    apps.mapNotNull { app ->
+        icon(app)?.let { png -> runCatching { png.decodeToImageBitmap() }.getOrNull() }?.let { app.id to it }
+    }.toMap()
 
 /** A colored rounded square with the app's initial, for when the platform has no icon to give. */
 @Composable

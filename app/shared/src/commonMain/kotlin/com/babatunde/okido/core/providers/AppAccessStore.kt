@@ -1,5 +1,6 @@
-package com.babatunde.okido.core
+package com.babatunde.okido.core.providers
 
+import com.babatunde.okido.core.AppAccess
 import kotlin.time.Instant
 
 interface AppAccessStore {

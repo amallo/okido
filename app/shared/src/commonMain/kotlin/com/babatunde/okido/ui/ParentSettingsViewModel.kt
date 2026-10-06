@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.ImageBitmap
 import com.babatunde.okido.core.AppAccess
-import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.ChangeParentPin
 import com.babatunde.okido.core.ChangeParentPinResult
 import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.UnlockParentSettings
+import com.babatunde.okido.core.providers.AppIconLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +46,7 @@ enum class PinChangeError { InvalidPin, Mismatch }
 class ParentSettingsViewModel(
     private val unlockParentSettings: UnlockParentSettings,
     private val appSettings: AppSettings,
-    private val appIcons: AppIcons,
+    private val appIconLoader: AppIconLoader,
     private val setAppAccess: SetAppAccess,
     private val changeParentPin: ChangeParentPin,
 ) : ViewModel() {
@@ -66,7 +66,7 @@ class ParentSettingsViewModel(
         viewModelScope.launch {
             _state.value = withContext(Dispatchers.IO) {
                 val apps = appSettings()
-                ParentSettingsUiState.Unlocked(apps, appIcons(apps.map { it.app }).decodeIcons())
+                ParentSettingsUiState.Unlocked(apps, appIconLoader.decodeIcons(apps.map { it.app }))
             }
         }
     }

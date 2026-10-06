@@ -1,7 +1,7 @@
-package com.babatunde.okido.infra
+package com.babatunde.okido.infra.providers
 
 import android.content.SharedPreferences
-import com.babatunde.okido.core.ParentPin
+import com.babatunde.okido.core.providers.ParentPin
 import java.security.MessageDigest
 import java.security.SecureRandom
 

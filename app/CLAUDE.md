@@ -4,9 +4,11 @@ Le code de `shared/src/commonMain` tourne sur Android et iOS (UI comprise, via C
 Le code propre à une plateforme va dans `androidMain` / `iosMain`.
 
 ## Clean architecture (packages sous `com.babatunde.okido`)
-- `core` : le métier. Entités, use cases, ports (interfaces). Kotlin pur, uniquement dans `commonMain`.
-- `infra` : implémentations des ports de `core`, le plus souvent par plateforme (`androidMain` / `iosMain`).
+- `core` : le métier. Entités et use cases. Kotlin pur, uniquement dans `commonMain`.
+  - `core.providers` : les ports (interfaces) dont dépendent les use cases.
+- `infra` : points d'entrée système (service d'accessibilité, receivers) et assemblage Koin.
   Chaque plateforme fournit `actual val infraModule` (Koin).
+  - `infra.providers` : implémentations des ports de `core.providers`, le plus souvent par plateforme (`androidMain` / `iosMain`).
 - `ui` : Compose et ViewModels. Consomme les use cases de `core`.
 - `di` : assemblage Koin (`initKoin()`). Seul package qui connaît tous les autres.
 

@@ -1,5 +1,7 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.ParentPin
+
 class ChangeParentPin(private val parentPin: ParentPin) {
     operator fun invoke(current: String, new: String, confirmation: String): ChangeParentPinResult {
         if (!parentPin.verify(current)) return ChangeParentPinResult.InvalidPin

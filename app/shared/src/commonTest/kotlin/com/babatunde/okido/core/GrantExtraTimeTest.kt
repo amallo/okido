@@ -1,5 +1,6 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.ExtraTimeScheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

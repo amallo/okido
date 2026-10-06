@@ -3,9 +3,9 @@ package com.babatunde.okido.infra
 import android.accessibilityservice.AccessibilityService
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
-import com.babatunde.okido.core.AppAccessStore
-import com.babatunde.okido.core.Clock
-import com.babatunde.okido.core.ScreenLocker
+import com.babatunde.okido.core.providers.AppAccessStore
+import com.babatunde.okido.core.providers.Clock
+import com.babatunde.okido.core.providers.ScreenLocker
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

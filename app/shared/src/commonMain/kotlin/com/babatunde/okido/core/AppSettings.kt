@@ -1,5 +1,8 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.AppAccessStore
+import com.babatunde.okido.core.providers.AppCatalog
+
 class AppSettings(
     private val appCatalog: AppCatalog,
     private val appAccessStore: AppAccessStore,

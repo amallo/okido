@@ -1,4 +1,4 @@
-package com.babatunde.okido.core
+package com.babatunde.okido.core.providers
 
 import kotlin.time.Duration
 

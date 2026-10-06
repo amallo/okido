@@ -1,5 +1,10 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.AppAccessStore
+import com.babatunde.okido.core.providers.AppCatalog
+import com.babatunde.okido.core.providers.Clock
+import com.babatunde.okido.core.providers.ScreenLocker
+
 class LaunchApp(
     private val appAccessStore: AppAccessStore,
     private val clock: Clock,

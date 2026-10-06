@@ -1,5 +1,9 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.AccessStore
+import com.babatunde.okido.core.providers.Clock
+import com.babatunde.okido.core.providers.ScreenLocker
+
 class LockNow(
     private val accessStore: AccessStore,
     private val clock: Clock,

@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.ImageBitmap
 import com.babatunde.okido.core.AllowedApps
 import com.babatunde.okido.core.AlwaysAllowedApps
-import com.babatunde.okido.core.AppIcons
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.core.providers.AppIconLoader
 import com.babatunde.okido.core.LockNow
 import com.babatunde.okido.core.RemainingTime
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class HomeViewModel(
     private val remainingTime: RemainingTime,
     private val allowedApps: AllowedApps,
     private val alwaysAllowedApps: AlwaysAllowedApps,
-    private val appIcons: AppIcons,
+    private val appIconLoader: AppIconLoader,
     private val launchApp: LaunchApp,
     private val lockNow: LockNow,
 ) : ViewModel() {
@@ -74,7 +74,7 @@ class HomeViewModel(
             val (loadedApps, loadedIcons) = withContext(Dispatchers.IO) {
                 val allowed = allowedApps()
                 // Always allowed apps are among the allowed ones, so their icons are loaded too.
-                LoadedApps(allowed, alwaysAllowedApps()) to appIcons(allowed).decodeIcons()
+                LoadedApps(allowed, alwaysAllowedApps()) to appIconLoader.decodeIcons(allowed)
             }
             icons.value = loadedIcons
             apps.value = loadedApps

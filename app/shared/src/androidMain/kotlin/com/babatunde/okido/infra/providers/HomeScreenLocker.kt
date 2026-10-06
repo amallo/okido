@@ -1,8 +1,8 @@
-package com.babatunde.okido.infra
+package com.babatunde.okido.infra.providers
 
 import android.content.Context
 import android.content.Intent
-import com.babatunde.okido.core.ScreenLocker
+import com.babatunde.okido.core.providers.ScreenLocker
 
 /**
  * Brings Okido itself to the front rather than the HOME intent: when Okido is not the default home app,

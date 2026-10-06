@@ -1,4 +1,4 @@
-package com.babatunde.okido.infra
+package com.babatunde.okido.infra.providers
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
-import com.babatunde.okido.core.ExtraTimeScheduler
+import com.babatunde.okido.core.providers.ExtraTimeScheduler
+import com.babatunde.okido.infra.ExtraTimeEndedReceiver
 import kotlin.time.Duration
 
 class AlarmManagerExtraTimeScheduler(private val context: Context) : ExtraTimeScheduler {

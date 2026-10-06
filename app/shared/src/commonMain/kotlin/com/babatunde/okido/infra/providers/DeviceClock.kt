@@ -1,6 +1,6 @@
-package com.babatunde.okido.infra
+package com.babatunde.okido.infra.providers
 
-import com.babatunde.okido.core.Clock
+import com.babatunde.okido.core.providers.Clock
 import kotlin.time.Instant
 
 class DeviceClock : Clock {

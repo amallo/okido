@@ -1,7 +1,7 @@
-package com.babatunde.okido.infra
+package com.babatunde.okido.infra.providers
 
 import android.content.SharedPreferences
-import com.babatunde.okido.core.AccessStore
+import com.babatunde.okido.core.providers.AccessStore
 import kotlin.time.Instant
 
 class SharedPreferencesAccessStore(private val preferences: SharedPreferences) : AccessStore {

@@ -1,5 +1,13 @@
 package com.babatunde.okido.core
 
+import com.babatunde.okido.core.providers.AccessStore
+import com.babatunde.okido.core.providers.AppAccessStore
+import com.babatunde.okido.core.providers.AppCatalog
+import com.babatunde.okido.core.providers.BlockingService
+import com.babatunde.okido.core.providers.Clock
+import com.babatunde.okido.core.providers.OnboardingStore
+import com.babatunde.okido.core.providers.ParentPin
+import com.babatunde.okido.core.providers.ScreenLocker
 import kotlin.time.Instant
 
 class FakeAccessStore(private var unlockedUntil: Instant? = null) : AccessStore {
@@ -22,14 +30,12 @@ class FakeScreenLocker : ScreenLocker {
 
 class FakeAppCatalog(
     private val apps: List<LaunchableApp> = emptyList(),
-    private val icons: Map<String, ByteArray> = emptyMap(),
 ) : AppCatalog {
     val launched = mutableListOf<LaunchableApp>()
     override fun launchableApps(): List<LaunchableApp> = apps
     override fun launch(app: LaunchableApp) {
         launched += app
     }
-    override fun icon(app: LaunchableApp): ByteArray? = icons[app.id]
 }
 
 class FakeParentPin(private var pin: String? = null) : ParentPin {
