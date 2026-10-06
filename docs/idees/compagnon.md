@@ -24,6 +24,16 @@ L'enfant n'est pas privé d'écran : il laisse son compagnon se reposer.
 
 **Option : les rêves.** Au retour, le compagnon raconte un rêve en une phrase, avec un emoji : « J'ai rêvé d'une 🪶 plume. Et toi, tu en trouves une ? » Ça renvoie l'enfant vers le monde réel, sans aucun dessin à produire.
 
+## Forme
+
+Le « O » du logo, avec un visage. Il n'a ni bras ni jambes.
+
+- **Le corps** : l'anneau indigo `#5856D6`.
+- **Le visage** : deux yeux et une bouche. Reposé, il a les yeux ronds et sourit. Fatigué, il a les paupières mi-closes et bâille.
+- **Le sable orange `#FF9500`** : c'est le sommeil, comme celui du marchand de sable. Reposé, il n'y en a qu'une fine couche au fond de l'anneau. Fatigué, l'anneau est rempli presque jusqu'aux yeux, comme le bas d'un sablier écoulé. Deux états seulement, pour ne pas en faire un chronomètre.
+
+On a écarté la forme sablier complète. Elle est parlante (le repos, c'est retourner le sablier), mais on y place mal le visage, et elle ferait du compagnon un chronomètre plutôt qu'un petit être.
+
 ## Version minimale
 
 - 2 dessins : reposé et fatigué. Ce peut être simplement le « O » du logo avec des yeux.
