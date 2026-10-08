@@ -81,8 +81,9 @@ fun App(
                 icons = state.icons,
                 onLaunch = homeViewModel::onLaunch,
                 onPinChange = extraTimeViewModel::onPinChange,
-                onDurationChange = extraTimeViewModel::onDurationChange,
+                onSubmitPin = extraTimeViewModel::onSubmitPin,
                 onGrant = extraTimeViewModel::onGrant,
+                onCancel = extraTimeViewModel::onCancel,
                 onParentSettings = { showingParentSettings = true },
             )
             is HomeUiState.Unlocked -> if (askingMoreTime) {
@@ -90,8 +91,9 @@ fun App(
                     title = "Plus de temps",
                     state = extraTime,
                     onPinChange = extraTimeViewModel::onPinChange,
-                    onDurationChange = extraTimeViewModel::onDurationChange,
+                    onSubmitPin = extraTimeViewModel::onSubmitPin,
                     onGrant = extraTimeViewModel::onGrant,
+                    onCancel = extraTimeViewModel::onCancel,
                     onBack = { askingMoreTime = false },
                 )
             } else {

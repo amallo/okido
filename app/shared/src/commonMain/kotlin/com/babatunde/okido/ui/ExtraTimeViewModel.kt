@@ -3,6 +3,7 @@ package com.babatunde.okido.ui
 import androidx.lifecycle.ViewModel
 import com.babatunde.okido.core.GrantExtraTime
 import com.babatunde.okido.core.GrantExtraTimeResult
+import com.babatunde.okido.core.VerifyParentPin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,14 +16,16 @@ import kotlin.time.Duration.Companion.minutes
 fun grantableDurations(debug: Boolean = false): List<Duration> =
     listOfNotNull(1.minutes.takeIf { debug }, 5.minutes, 15.minutes, 30.minutes, 1.hours)
 
+/** First the parent PIN, then, once [pinAccepted], the duration to grant. */
 data class ExtraTimeUiState(
     val pin: String = "",
+    val pinAccepted: Boolean = false,
     val durations: List<Duration> = grantableDurations(),
-    val duration: Duration = 15.minutes,
     val result: GrantExtraTimeResult? = null,
 )
 
 class ExtraTimeViewModel(
+    private val verifyParentPin: VerifyParentPin,
     private val grantExtraTime: GrantExtraTime,
     durations: List<Duration>,
 ) : ViewModel() {
@@ -33,17 +36,23 @@ class ExtraTimeViewModel(
         _state.update { it.copy(pin = pin, result = null) }
     }
 
-    fun onDurationChange(duration: Duration) {
-        _state.update { it.copy(duration = duration, result = null) }
+    fun onSubmitPin() {
+        _state.update {
+            if (verifyParentPin(it.pin)) it.copy(pinAccepted = true) else it.copy(pin = "", result = GrantExtraTimeResult.InvalidPin)
+        }
+    }
+
+    /** The PIN is checked again when granting, so the duration step alone never grants time. */
+    fun onGrant(duration: Duration) {
+        val result = grantExtraTime(pin = _state.value.pin, duration = duration)
+        _state.update { it.copy(pin = "", pinAccepted = false, result = result) }
+    }
+
+    fun onCancel() {
+        _state.update { it.copy(pin = "", pinAccepted = false, result = null) }
     }
 
     fun clearResult() {
         _state.update { it.copy(result = null) }
-    }
-
-    fun onGrant() {
-        val current = _state.value
-        val result = grantExtraTime(pin = current.pin, duration = current.duration)
-        _state.update { it.copy(pin = "", result = result) }
     }
 }

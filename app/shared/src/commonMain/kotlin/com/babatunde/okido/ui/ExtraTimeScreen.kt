@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,7 +34,6 @@ import com.babatunde.okido.core.GrantExtraTimeResult
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.Companion
 import com.babatunde.okido.ui.components.PinPad
-import com.babatunde.okido.ui.components.SegmentedControl
 import com.babatunde.okido.ui.theme.OkidoTheme
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -44,9 +44,10 @@ private fun Duration.label(): String =
     if (this >= 1.hours && inWholeMinutes % 60 == 0L) "$inWholeHours h" else "$inWholeMinutes min"
 
 /**
- * Locked: shows the "time's up" screen first, then the code step once the child asks for more time.
+ * Locked: shows the "time's up" screen first, then, once the child asks for more time,
+ * a parent enters their code on one screen and picks the duration on the next.
  * The time's up screen lists the [alwaysApps], which stay usable without granted time.
- * With [onBack] (asking from the home screen), it opens straight on the code step.
+ * With [onBack] (asking from the home screen), it opens straight on the code screen.
  */
 @Composable
 fun ExtraTimeScreen(
@@ -56,24 +57,22 @@ fun ExtraTimeScreen(
     icons: Map<String, ImageBitmap> = emptyMap(),
     onLaunch: (LaunchableApp) -> Unit = {},
     onPinChange: (String) -> Unit = {},
-    onDurationChange: (Duration) -> Unit = {},
-    onGrant: () -> Unit = {},
+    onSubmitPin: () -> Unit = {},
+    onGrant: (Duration) -> Unit = {},
+    onCancel: () -> Unit = {},
     onBack: (() -> Unit)? = null,
     onParentSettings: (() -> Unit)? = null,
 ) {
     var askingCode by remember { mutableStateOf(onBack != null) }
     Surface(modifier = Modifier.fillMaxSize()) {
-        if (askingCode) {
-            CodeStep(
-                state = state,
-                onPinChange = onPinChange,
-                onDurationChange = onDurationChange,
-                onGrant = onGrant,
-                onCancel = {
-                    onPinChange("")
-                    if (onBack != null) onBack() else askingCode = false
-                },
-            )
+        val cancel = {
+            onCancel()
+            if (onBack != null) onBack() else askingCode = false
+        }
+        if (askingCode && state.pinAccepted) {
+            DurationStep(durations = state.durations, onGrant = onGrant, onCancel = cancel)
+        } else if (askingCode) {
+            CodeStep(state = state, onPinChange = onPinChange, onSubmitPin = onSubmitPin, onCancel = cancel)
         } else {
             TimeUpStep(
                 title = title,
@@ -158,34 +157,66 @@ private fun AlwaysAvailableApps(
 private fun CodeStep(
     state: ExtraTimeUiState,
     onPinChange: (String) -> Unit,
-    onDurationChange: (Duration) -> Unit,
-    onGrant: () -> Unit,
+    onSubmitPin: () -> Unit,
     onCancel: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize().safeContentPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.Start)) {
             Text("Annuler", style = MaterialTheme.typography.bodyLarge)
         }
-        SegmentedControl(
-            options = state.durations,
-            selected = state.duration,
-            onSelect = onDurationChange,
-            label = { it.label() },
-            modifier = Modifier.padding(horizontal = 32.dp),
-        )
         Spacer(Modifier.weight(1f))
         PinPad(
             title = "Code parent",
-            subtitle = "pour accorder ${state.duration.label()} de plus",
+            subtitle = "pour accorder plus de temps",
             pin = state.pin,
             onPinChange = onPinChange,
-            onSubmit = onGrant,
+            onSubmit = onSubmitPin,
             error = state.result == GrantExtraTimeResult.InvalidPin,
         )
+        Spacer(Modifier.weight(1f))
+    }
+}
+
+/** One large button per duration: a single tap grants it. */
+@Composable
+private fun DurationStep(
+    durations: List<Duration>,
+    onGrant: (Duration) -> Unit,
+    onCancel: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().safeContentPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.Start)) {
+            Text("Annuler", style = MaterialTheme.typography.bodyLarge)
+        }
+        Spacer(Modifier.weight(1f))
+        Text("Combien de temps ?", style = MaterialTheme.typography.headlineMedium)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "à accorder en plus",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(32.dp))
+        Column(
+            modifier = Modifier.padding(horizontal = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            durations.forEach { duration ->
+                OutlinedButton(
+                    onClick = { onGrant(duration) },
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                ) {
+                    Text(duration.label(), style = MaterialTheme.typography.titleLarge)
+                }
+            }
+        }
         Spacer(Modifier.weight(1f))
     }
 }
@@ -210,4 +241,10 @@ private fun TimeUpWithAlwaysAppsPreview() {
 @Preview
 private fun CodePreview() {
     OkidoTheme { ExtraTimeScreen(title = "Plus de temps", state = ExtraTimeUiState(pin = "12"), onBack = {}) }
+}
+
+@Composable
+@Preview
+private fun DurationPreview() {
+    OkidoTheme { ExtraTimeScreen(title = "Plus de temps", state = ExtraTimeUiState(pinAccepted = true), onBack = {}) }
 }

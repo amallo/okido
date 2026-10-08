@@ -8,7 +8,7 @@ import org.koin.dsl.module
 const val DEBUG_PROPERTY = "debug"
 
 val uiModule = module {
-    viewModel { ExtraTimeViewModel(get(), grantableDurations(debug = getProperty(DEBUG_PROPERTY, false))) }
+    viewModel { ExtraTimeViewModel(get(), get(), grantableDurations(debug = getProperty(DEBUG_PROPERTY, false))) }
     viewModelOf(::HomeViewModel)
     viewModelOf(::ParentSettingsViewModel)
     viewModelOf(::OnboardingViewModel)
