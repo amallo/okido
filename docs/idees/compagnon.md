@@ -1,8 +1,8 @@
 # Le compagnon qui se repose
 
-> **Statut : idée libre, non décidée.** Rien n'est prévu ni implémenté.
+> **Statut : en partie implémenté.** Le compagnon et son sable sont dans l'app (`ui/components/Companion.kt`). Le texte du compagnon et les rêves restent des idées.
 
-Un petit compagnon est **reposé** quand il reste du temps d'écran. Il est **fatigué** quand le temps est écoulé. Il retrouve ses forces quand la tablette est posée.
+Un petit compagnon se remplit de sable, donc de sommeil, au fil du temps d'écran. Il est **fatigué** quand le temps est écoulé. Il retrouve ses forces quand la tablette est posée.
 
 ## Le besoin
 
@@ -16,7 +16,7 @@ On cherche plutôt à **donner envie** de se passer de l'écran, avec quatre con
 
 ## L'idée
 
-- **Reposé** : à l'accueil, quand il reste du temps. Il a les yeux ouverts et sourit.
+- **Éveillé** : à l'accueil, quand il reste du temps. Il a les yeux ouverts et sourit, et son sable monte petit à petit.
 - **Fatigué** : à l'écran « Temps écoulé ». Il bâille : « Je vais me reposer. Et toi, tu fais quoi ? »
 - **Au retour**, après une pause, il est de nouveau reposé.
 
@@ -29,16 +29,22 @@ L'enfant n'est pas privé d'écran : il laisse son compagnon se reposer.
 Le « O » du logo, avec un visage. Il n'a ni bras ni jambes.
 
 - **Le corps** : l'anneau indigo `#5856D6`.
-- **Le visage** : deux yeux et une bouche. Reposé, il a les yeux ronds et sourit. Fatigué, il a les paupières mi-closes et bâille.
-- **Le sable orange `#FF9500`** : c'est le sommeil, comme celui du marchand de sable. Reposé, il n'y en a qu'une fine couche au fond de l'anneau. Fatigué, l'anneau est rempli presque jusqu'aux yeux, comme le bas d'un sablier écoulé. Deux états seulement, pour ne pas en faire un chronomètre.
+- **Le visage** : deux yeux et une bouche. Éveillé, il a les yeux ronds et sourit. Fatigué, il a les paupières mi-closes et bâille.
+- **Le sable orange `#FF9500`** : c'est le sommeil, comme celui du marchand de sable. Le compagnon fait office de sablier :
+  - au début de la session, il n'y a qu'une fine couche au fond de l'anneau ;
+  - le sable monte avec la part du temps accordé déjà utilisée ;
+  - à la limite, que ce soit 5 min ou 1 h, l'anneau est rempli presque jusqu'aux yeux.
+- **Le temps restant** reste affiché en minutes à côté, pour le parent et les enfants qui savent lire l'heure.
+- **Si un parent rallonge une session en cours**, le début ne change pas : le sable redescend un peu.
 
-On a écarté la forme sablier complète. Elle est parlante (le repos, c'est retourner le sablier), mais on y place mal le visage, et elle ferait du compagnon un chronomètre plutôt qu'un petit être.
+On a écarté la forme sablier complète. Elle est parlante (le repos, c'est retourner le sablier), mais on y place mal le visage. Le « O » garde le sablier à l'intérieur, avec le sable, sans cesser d'être un petit être.
 
 ## Version minimale
 
-- 2 dessins : reposé et fatigué. Ce peut être simplement le « O » du logo avec des yeux.
+- Un seul dessin, le « O » du logo, avec deux visages : éveillé et fatigué.
+- Des animations lentes et discrètes : il respire et cligne des yeux quand il est éveillé ; il s'affaisse, bâille et laisse monter des « z » quand il est fatigué. Rien qui appelle l'enfant, aucune réaction au toucher.
 - Une liste d'emojis avec une phrase chacun, pour les rêves.
-- Pas de décor, pas d'animation, pas de paliers de croissance.
+- Pas de décor, pas de paliers de croissance.
 
 ## Règles
 
