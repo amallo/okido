@@ -13,7 +13,7 @@ import com.babatunde.okido.core.OpenBlockingSettings
 import com.babatunde.okido.core.RemainingTime
 import com.babatunde.okido.core.SessionProgress
 import com.babatunde.okido.core.SetAppAccess
-import com.babatunde.okido.core.UnlockParentSettings
+import com.babatunde.okido.core.VerifyParentPin
 import com.babatunde.okido.infra.infraModule
 import com.babatunde.okido.ui.uiModule
 import org.koin.core.context.startKoin
@@ -27,7 +27,7 @@ val coreModule = module {
     factoryOf(::RemainingTime)
     factoryOf(::SessionProgress)
     factoryOf(::LockNow)
-    factoryOf(::UnlockParentSettings)
+    factoryOf(::VerifyParentPin)
     factoryOf(::AppSettings)
     factoryOf(::SetAppAccess)
     factoryOf(::AllowedApps)

@@ -9,7 +9,7 @@ import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.ChangeParentPin
 import com.babatunde.okido.core.ChangeParentPinResult
 import com.babatunde.okido.core.SetAppAccess
-import com.babatunde.okido.core.UnlockParentSettings
+import com.babatunde.okido.core.VerifyParentPin
 import com.babatunde.okido.core.providers.AppIconLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -44,7 +44,7 @@ enum class PinChangeStep { Current, New, Confirm }
 enum class PinChangeError { InvalidPin, Mismatch }
 
 class ParentSettingsViewModel(
-    private val unlockParentSettings: UnlockParentSettings,
+    private val verifyParentPin: VerifyParentPin,
     private val appSettings: AppSettings,
     private val appIconLoader: AppIconLoader,
     private val setAppAccess: SetAppAccess,
@@ -59,7 +59,7 @@ class ParentSettingsViewModel(
 
     fun onSubmitPin() {
         val current = _state.value as? ParentSettingsUiState.PinRequired ?: return
-        if (!unlockParentSettings(current.pin)) {
+        if (!verifyParentPin(current.pin)) {
             _state.value = ParentSettingsUiState.PinRequired(invalidPin = true)
             return
         }
@@ -95,7 +95,7 @@ class ParentSettingsViewModel(
         val state = _state.value as? ParentSettingsUiState.ChangingPin ?: return
         _state.value = when (state.step) {
             // Checked right away, so the parent does not type two new codes for nothing.
-            PinChangeStep.Current -> if (unlockParentSettings(state.pin)) {
+            PinChangeStep.Current -> if (verifyParentPin(state.pin)) {
                 state.copy(step = PinChangeStep.New, current = state.pin, pin = "")
             } else {
                 state.copy(pin = "", error = PinChangeError.InvalidPin)

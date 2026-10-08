@@ -2,6 +2,6 @@ package com.babatunde.okido.core
 
 import com.babatunde.okido.core.providers.ParentPin
 
-class UnlockParentSettings(private val parentPin: ParentPin) {
+class VerifyParentPin(private val parentPin: ParentPin) {
     operator fun invoke(pin: String): Boolean = parentPin.verify(pin)
 }
