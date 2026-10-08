@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-enum class OnboardingPage { Welcome, Privacy, CreatePin, ConfirmPin, EnableBlocking, Done }
+enum class OnboardingPage { Welcome, Guidelines, Privacy, CreatePin, ConfirmPin, EnableBlocking, Done }
 
-private val introductionPages = listOf(OnboardingPage.Welcome, OnboardingPage.Privacy, OnboardingPage.CreatePin, OnboardingPage.ConfirmPin)
+private val introductionPages = listOf(OnboardingPage.Welcome, OnboardingPage.Guidelines, OnboardingPage.Privacy, OnboardingPage.CreatePin, OnboardingPage.ConfirmPin)
 
 data class OnboardingUiState(
     val page: OnboardingPage = OnboardingPage.Welcome,
@@ -39,7 +39,8 @@ class OnboardingViewModel(
     fun onContinue() {
         _state.update { state ->
             when (state.page) {
-                OnboardingPage.Welcome -> state.copy(page = OnboardingPage.Privacy)
+                OnboardingPage.Welcome -> state.copy(page = OnboardingPage.Guidelines)
+                OnboardingPage.Guidelines -> state.copy(page = OnboardingPage.Privacy)
                 OnboardingPage.Privacy -> state.copy(page = OnboardingPage.CreatePin)
                 else -> state
             }
@@ -49,7 +50,8 @@ class OnboardingViewModel(
     fun onBack() {
         _state.update { state ->
             when (state.page) {
-                OnboardingPage.Privacy -> state.copy(page = OnboardingPage.Welcome)
+                OnboardingPage.Guidelines -> state.copy(page = OnboardingPage.Welcome)
+                OnboardingPage.Privacy -> state.copy(page = OnboardingPage.Guidelines)
                 OnboardingPage.CreatePin -> state.copy(page = OnboardingPage.Privacy, pin = "", mismatch = false)
                 OnboardingPage.ConfirmPin -> state.copy(page = OnboardingPage.CreatePin, pin = "", chosenPin = "")
                 else -> state

@@ -1,6 +1,7 @@
 package com.babatunde.okido.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.babatunde.okido.ui.components.Companion
 import com.babatunde.okido.ui.components.PinPad
 import com.babatunde.okido.ui.theme.OkidoColors
 import com.babatunde.okido.ui.theme.OkidoTheme
@@ -37,7 +39,7 @@ import okido.shared.generated.resources.lock
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-/** First launch only: what Okido does, the privacy promise, the parent PIN, then turning blocking on. */
+/** First launch only: what Okido does, how much screen time is advised, the privacy promise, the parent PIN, then turning blocking on. */
 @Composable
 fun OnboardingScreen(
     state: OnboardingUiState,
@@ -61,18 +63,16 @@ fun OnboardingScreen(
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 when (state.page) {
                     OnboardingPage.Welcome -> InfoPage(
-                        icon = Res.drawable.hourglass,
-                        iconColor = Color.White,
-                        iconTint = Color.Unspecified,
+                        illustration = { IconBadge(Res.drawable.hourglass, Color.White, tint = Color.Unspecified) },
                         title = "Bienvenue sur Okido",
                         body = "Choisis les apps de ton enfant et le temps à y passer. " +
                             "Quand le temps est écoulé, l'écran se verrouille jusqu'à ce que tu en accordes plus.",
                         action = "Continuer",
                         onAction = onContinue,
                     )
+                    OnboardingPage.Guidelines -> GuidelinesPage(onContinue)
                     OnboardingPage.Privacy -> InfoPage(
-                        icon = Res.drawable.lock,
-                        iconColor = OkidoColors.Green,
+                        illustration = { IconBadge(Res.drawable.lock, OkidoColors.Green) },
                         title = "Tout reste sur ce téléphone",
                         body = "Aucun compte à créer, aucun cloud. Les réglages et le code parent restent " +
                             "sur cet appareil et ne sont jamais envoyés sur internet.",
@@ -98,8 +98,7 @@ fun OnboardingScreen(
                         modifier = Modifier.align(Alignment.Center),
                     )
                     OnboardingPage.EnableBlocking -> InfoPage(
-                        icon = Res.drawable.accessibility,
-                        iconColor = OkidoColors.Blue,
+                        illustration = { IconBadge(Res.drawable.accessibility, OkidoColors.Blue) },
                         title = "Autoriser Okido à bloquer les apps",
                         body = "Pour bloquer les apps non autorisées, Okido utilise le service d'accessibilité " +
                             "d'Android. Il lit uniquement le nom de l'app affichée à l'écran, pour la comparer " +
@@ -124,20 +123,21 @@ fun OnboardingScreen(
     }
 }
 
-private val pagesWithBack = setOf(OnboardingPage.Privacy, OnboardingPage.CreatePin, OnboardingPage.ConfirmPin)
+private val pagesWithBack = setOf(OnboardingPage.Guidelines, OnboardingPage.Privacy, OnboardingPage.CreatePin, OnboardingPage.ConfirmPin)
 
 /** Creating and confirming the PIN share one dot. */
 private fun OnboardingPage.dotIndex(): Int = when (this) {
     OnboardingPage.Welcome -> 0
-    OnboardingPage.Privacy -> 1
-    OnboardingPage.CreatePin, OnboardingPage.ConfirmPin -> 2
-    OnboardingPage.EnableBlocking, OnboardingPage.Done -> 3
+    OnboardingPage.Guidelines -> 1
+    OnboardingPage.Privacy -> 2
+    OnboardingPage.CreatePin, OnboardingPage.ConfirmPin -> 3
+    OnboardingPage.EnableBlocking, OnboardingPage.Done -> 4
 }
 
 @Composable
 private fun ProgressDots(current: Int, modifier: Modifier = Modifier) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        repeat(4) { index ->
+        repeat(5) { index ->
             val color = if (index == current) {
                 MaterialTheme.colorScheme.primary
             } else {
@@ -149,14 +149,87 @@ private fun ProgressDots(current: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
+private fun GuidelinesPage(onContinue: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(Modifier.weight(1f))
+        Companion(sleepiness = 0.5f, modifier = Modifier.size(104.dp))
+        Spacer(Modifier.height(24.dp))
+        Text("Pourquoi limiter les écrans ?", style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = "Trop d'écrans prend la place du sommeil, du jeu et du mouvement, et fatigue les yeux des enfants.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(24.dp))
+        // The recommendation stands out as a quote, in the companion's colors.
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "« Pour les enfants à partir de 6 ans, un usage modéré, encadré par un adulte. »",
+                style = MaterialTheme.typography.titleLarge,
+                color = OkidoColors.Indigo,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Commission « Enfants et écrans », remise au gouvernement en 2024",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = "C'est toi qui choisis le temps accordé.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.weight(1f))
+        Button(
+            onClick = onContinue,
+            shape = RoundedCornerShape(14.dp),
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+        ) {
+            Text("Continuer", style = MaterialTheme.typography.titleMedium)
+        }
+        Spacer(Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun IconBadge(icon: DrawableResource, color: Color, tint: Color = Color.White) {
+    Box(
+        modifier = Modifier.size(96.dp).background(color, CircleShape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            tint = tint,
+            modifier = Modifier.size(52.dp),
+        )
+    }
+}
+
+@Composable
 private fun InfoPage(
-    icon: DrawableResource,
-    iconColor: Color,
+    illustration: @Composable () -> Unit,
     title: String,
     body: String,
     action: String,
     onAction: () -> Unit,
-    iconTint: Color = Color.White,
     secondaryAction: String? = null,
     onSecondaryAction: () -> Unit = {},
     note: String? = null,
@@ -166,17 +239,7 @@ private fun InfoPage(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
-        Box(
-            modifier = Modifier.size(96.dp).background(iconColor, CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                tint = iconTint,
-                modifier = Modifier.size(52.dp),
-            )
-        }
+        illustration()
         Spacer(Modifier.height(24.dp))
         Text(title, style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
         Spacer(Modifier.height(12.dp))
@@ -215,6 +278,12 @@ private fun InfoPage(
 @Preview
 private fun WelcomePreview() {
     OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.Welcome)) }
+}
+
+@Composable
+@Preview
+private fun GuidelinesPreview() {
+    OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.Guidelines)) }
 }
 
 @Composable
