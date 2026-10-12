@@ -45,7 +45,7 @@ Okido s'adresse à des enfants. La barre est donc plus haute que pour une app gr
 | La récompense n'est jamais du temps d'écran | ✅ | C'est une règle produit. |
 | Pas de pub, pas d'abonnement | ✅ (principe) | Okido+ sera un achat unique. Pas encore implémenté. |
 | Engagements publiés sous forme courte (CNIL 6) | ⚠️ À faire | Une liste de quelques lignes, dans la fiche du store et dans l'app. |
-| Okido expliqué à l'enfant avec ses mots (ICO 11, CNIL 5) | ⚠️ À faire | Un écran court qui dit pourquoi Okido est là et ce qu'il fait, sans rien cacher. |
+| Okido expliqué à l'enfant avec ses mots (ICO 11, CNIL 5) | ⚠️ En partie | Les écrans du code parent expliquent à l'enfant que ce code est pour les parents. Reste un écran court qui dit pourquoi Okido est là et ce qu'il fait, sans rien cacher. |
 | Diagnostic attentionnel complet | ⚠️ À faire | Passer chaque écran au crible de la méthode Designers Éthiques, une fois l'onboarding terminé. |
 
 ## Règles pour les futures features

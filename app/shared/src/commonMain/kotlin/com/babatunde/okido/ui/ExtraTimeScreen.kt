@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.babatunde.okido.core.GrantExtraTimeResult
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.Companion
+import com.babatunde.okido.ui.components.ChildErrorMessage
+import com.babatunde.okido.ui.components.ChildHint
 import com.babatunde.okido.ui.components.PinPad
 import com.babatunde.okido.ui.theme.OkidoTheme
 import kotlin.time.Duration
@@ -175,6 +177,8 @@ private fun CodeStep(
             onPinChange = onPinChange,
             onSubmit = onSubmitPin,
             error = state.result == GrantExtraTimeResult.InvalidPin,
+            errorMessage = ChildErrorMessage,
+            hint = ChildHint,
         )
         Spacer(Modifier.weight(1f))
     }

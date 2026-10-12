@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,11 +33,16 @@ import com.babatunde.okido.ui.theme.OkidoTheme
 
 const val PIN_LENGTH = 4
 
+/** For the screens a child can open: says who the code is for, without scolding. */
+const val ChildHint = "Ce code est pour les parents.\nVa voir un parent : il le tapera pour toi."
+const val ChildErrorMessage = "Ce n'est pas le bon code. Demande à un parent."
+
 private val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫")
 
 /**
  * iOS-style passcode entry: a row of dots and a round numeric keypad.
  * Submits on its own once [PIN_LENGTH] digits are typed, and shakes the dots when [error] turns true.
+ * [hint] stays visible above the dots, for whoever might not know what the code is for.
  */
 @Composable
 fun PinPad(
@@ -48,6 +54,7 @@ fun PinPad(
     error: Boolean = false,
     subtitle: String? = null,
     errorMessage: String = "Code incorrect",
+    hint: String? = null,
 ) {
     val shake = remember { Animatable(0f) }
     val haptics = LocalHapticFeedback.current
@@ -83,6 +90,15 @@ fun PinPad(
             style = MaterialTheme.typography.bodyMedium,
             color = if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (hint != null) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = hint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+        }
         Spacer(Modifier.height(24.dp))
         Row(
             modifier = Modifier.offset(x = shake.value.dp),
@@ -137,6 +153,6 @@ private fun PinKey(key: String, onClick: () -> Unit) {
 @Preview
 private fun PinPadPreview() {
     OkidoTheme {
-        PinPad(title = "Saisir le code parent", pin = "12", onPinChange = {}, onSubmit = {})
+        PinPad(title = "Saisir le code parent", pin = "12", onPinChange = {}, onSubmit = {}, hint = ChildHint)
     }
 }

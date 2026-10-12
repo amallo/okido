@@ -30,6 +30,8 @@ import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.GroupedRow
 import com.babatunde.okido.ui.components.GroupedSection
+import com.babatunde.okido.ui.components.ChildErrorMessage
+import com.babatunde.okido.ui.components.ChildHint
 import com.babatunde.okido.ui.components.PinPad
 import com.babatunde.okido.ui.components.SegmentedControl
 import com.babatunde.okido.ui.theme.OkidoTheme
@@ -109,6 +111,8 @@ private fun PinStep(
             onPinChange = onPinChange,
             onSubmit = onSubmitPin,
             error = state.invalidPin,
+            errorMessage = ChildErrorMessage,
+            hint = ChildHint,
             modifier = Modifier.align(Alignment.Center),
         )
     }
