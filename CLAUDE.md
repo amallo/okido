@@ -7,3 +7,5 @@ Okido est une application de **contrôle parental**.
   Aucun compte, aucun cloud.
 - **Privacy by design** : les données de la famille restent sur
   l'appareil et ne sont jamais partagées.
+- **Design éthique** : chaque feature respecte les règles de
+  `docs/design-ethique.md` (pas de surveillance, pas de manipulation).
