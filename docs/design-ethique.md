@@ -54,6 +54,7 @@ Okido s'adresse à des enfants. La barre est donc plus haute que pour une app gr
 - Pas d'historique de l'activité de l'enfant.
 - L'enfant sait toujours qu'Okido est actif, et pourquoi.
 - Pas de récompense aléatoire, de série à tenir, de compte à rebours anxiogène, ni de notification qui rappelle l'enfant.
+- Aucun personnage ne montre de joie liée à l'écran, ni de tristesse ou de fatigue liée à la fin du temps.
 - Les réglages par défaut sont les plus protecteurs.
 - Les choix du parent sont présentés honnêtement, sans culpabiliser.
 - Jamais de pub, jamais de sponsor, des liens neutres.

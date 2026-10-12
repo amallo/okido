@@ -1,8 +1,10 @@
-# Le compagnon qui se repose
+# Le compagnon qui s'endort
 
 > **Statut : en partie implémenté.** Le compagnon et son sable sont dans l'app (`ui/components/Companion.kt`). Le texte du compagnon et les rêves restent des idées.
 
-Un petit compagnon se remplit de sable, donc de sommeil, au fil du temps d'écran. Il est **fatigué** quand le temps est écoulé. Il retrouve ses forces quand la tablette est posée.
+Un petit compagnon se remplit de sable, donc de sommeil, au fil du temps d'écran. Il **s'endort paisiblement** quand le temps est écoulé, et il est réveillé quand la tablette a été posée.
+
+Son humeur ne dépend jamais du temps d'écran : il est toujours serein. Seule son activité change, entre éveillé et endormi.
 
 ## Le besoin
 
@@ -16,11 +18,11 @@ On cherche plutôt à **donner envie** de se passer de l'écran, avec quatre con
 
 ## L'idée
 
-- **Éveillé** : à l'accueil, quand il reste du temps. Il a les yeux ouverts et sourit, et son sable monte petit à petit.
-- **Fatigué** : à l'écran « Temps écoulé ». Il bâille : « Je vais me reposer. Et toi, tu fais quoi ? »
-- **Au retour**, après une pause, il est de nouveau reposé.
+- **Éveillé** : à l'accueil, quand il reste du temps. Il est calme, les yeux ouverts et la bouche neutre, et son sable monte petit à petit. Il ne sourit pas : l'écran ne doit pas être ce qui le rend content.
+- **Endormi** : à l'écran « Temps écoulé ». Il dort paisiblement, avec un petit sourire : « C'est l'heure de ma sieste. Et toi, tu fais quoi ? »
+- **Au retour**, après une pause, il est de nouveau éveillé.
 
-L'enfant n'est pas privé d'écran : il laisse son compagnon se reposer.
+L'enfant n'est pas privé d'écran, et il n'a pas épuisé son compagnon : c'est simplement l'heure de sa sieste.
 
 **Option : les rêves.** Au retour, le compagnon raconte un rêve en une phrase, avec un emoji : « J'ai rêvé d'une 🪶 plume. Et toi, tu en trouves une ? » Ça renvoie l'enfant vers le monde réel, sans aucun dessin à produire.
 
@@ -28,8 +30,8 @@ L'enfant n'est pas privé d'écran : il laisse son compagnon se reposer.
 
 Le « O » du logo, avec un visage. Il n'a ni bras ni jambes.
 
-- **Le corps** : l'anneau indigo `#5856D6`.
-- **Le visage** : deux yeux et une bouche. Éveillé, il a les yeux ronds et sourit. Fatigué, il a les paupières mi-closes et bâille.
+- **Le corps** : l'anneau indigo `#5856D6`, légèrement resserré au milieu comme un sablier.
+- **Le visage** : deux yeux et une bouche. Éveillé, il a les yeux ronds et la bouche neutre. Endormi, il a les yeux fermés et un petit sourire.
 - **Le sable orange `#FF9500`** : c'est le sommeil, comme celui du marchand de sable. Le compagnon fait office de sablier :
   - au début de la session, il n'y a qu'une fine couche au fond de l'anneau ;
   - le sable monte avec la part du temps accordé déjà utilisée ;
@@ -41,8 +43,8 @@ On a écarté la forme sablier complète. Elle est parlante (le repos, c'est ret
 
 ## Version minimale
 
-- Un seul dessin, le « O » du logo, avec deux visages : éveillé et fatigué.
-- Des animations lentes et discrètes : il respire et cligne des yeux quand il est éveillé ; il s'affaisse, bâille et laisse monter des « z » quand il est fatigué. Rien qui appelle l'enfant, aucune réaction au toucher.
+- Un seul dessin, le « O » du logo, avec deux visages : éveillé et endormi.
+- Des animations lentes et discrètes : il respire et cligne des yeux quand il est éveillé ; il respire lentement et laisse monter des « z » quand il dort. Il ne bâille pas et ne s'affaisse pas. Rien qui appelle l'enfant, aucune réaction au toucher.
 - Une liste d'emojis avec une phrase chacun, pour les rêves.
 - Pas de décor, pas de paliers de croissance.
 
@@ -50,7 +52,8 @@ On a écarté la forme sablier complète. Elle est parlante (le repos, c'est ret
 
 - **C'est le compagnon de l'appareil, pas celui d'un enfant.** Sur une tablette partagée, les frères et sœurs coopèrent au lieu de rivaliser, sans profils à gérer.
 - **On ne peut pas interagir avec lui.** On ne le nourrit pas, on ne le caresse pas, il n'y a pas de mini-jeu. Sinon il deviendrait « mon ami dans la tablette », une nouvelle raison d'allumer l'écran.
-- **Il ne meurt jamais** et ne culpabilise jamais l'enfant. Au pire, il est fatigué.
+- **Il ne meurt jamais** et ne culpabilise jamais l'enfant.
+- **Son humeur ne dépend jamais du temps d'écran** : il est toujours serein, il est seulement éveillé ou endormi.
 - **La récompense n'est jamais du temps d'écran.**
 - **Pas de notification** pour réclamer l'enfant.
 - **Tout reste sur l'appareil.**
