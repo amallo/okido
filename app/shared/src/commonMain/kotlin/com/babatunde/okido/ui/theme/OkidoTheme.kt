@@ -21,18 +21,23 @@ object OkidoColors {
     val SecondaryLabel = Color(0xFF8E8E93)
 }
 
+// Darker variants for text on the light background, to reach a WCAG AA contrast (4.5:1).
+private val AccessibleBlue = Color(0xFF0062CC)
+private val AccessibleRed = Color(0xFFD70015)
+private val AccessibleSecondaryLabel = Color(0xFF6C6C70)
+
 private val LightColors = lightColorScheme(
-    primary = OkidoColors.Blue,
+    primary = AccessibleBlue,
     onPrimary = Color.White,
     secondary = OkidoColors.Indigo,
-    error = OkidoColors.Red,
+    error = AccessibleRed,
     background = Color(0xFFF2F2F7),
     onBackground = Color.Black,
     surface = Color(0xFFF2F2F7),
     onSurface = Color.Black,
     surfaceContainer = Color.White,
     surfaceVariant = Color(0xFFE5E5EA),
-    onSurfaceVariant = OkidoColors.SecondaryLabel,
+    onSurfaceVariant = AccessibleSecondaryLabel,
     outlineVariant = Color(0xFFC6C6C8),
 )
 

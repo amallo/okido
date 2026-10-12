@@ -46,7 +46,36 @@ Okido s'adresse à des enfants. La barre est donc plus haute que pour une app gr
 | Pas de pub, pas d'abonnement | ✅ (principe) | Okido+ sera un achat unique. Pas encore implémenté. |
 | Engagements publiés sous forme courte (CNIL 6) | ⚠️ À faire | Une liste de quelques lignes, dans la fiche du store et dans l'app. |
 | Okido expliqué à l'enfant avec ses mots (ICO 11, CNIL 5) | ⚠️ En partie | Les écrans du code parent expliquent à l'enfant que ce code est pour les parents. Reste un écran court qui dit pourquoi Okido est là et ce qu'il fait, sans rien cacher. |
-| Diagnostic attentionnel complet | ⚠️ À faire | Passer chaque écran au crible de la méthode Designers Éthiques, une fois l'onboarding terminé. |
+| Diagnostic attentionnel complet | ✅ Fait le 12/10/2026 | Voir « Diagnostic écran par écran » plus bas. Des points restent ouverts. |
+
+## Diagnostic écran par écran
+
+Fait le 12/10/2026 : on a passé chaque écran au crible de la méthode Designers Éthiques et vérifié les contrastes (WCAG AA, 4,5:1 pour le texte courant).
+
+### Ce qui va bien
+- **Onboarding** :
+  - les promesses (« tout reste sur ce téléphone ») sont vraies ;
+  - la page « Pourquoi limiter » cite sa source et rappelle que c'est le parent qui choisit ;
+  - le consentement à l'accessibilité dit ce qui est lu et ce qui ne l'est pas, et le message en cas de refus est neutre.
+- **Réglages par défaut** : toutes les apps sont bloquées, même si le parent passe l'étape.
+- **Choix de la durée** : des boutons identiques, sans durée longue mise en avant.
+- **Temps restant** : affiché en minutes, sans secondes qui défilent.
+- **Écrans du code parent** : ils expliquent à l'enfant que le code est pour les parents, et un mauvais code n'est pas grondé.
+
+### Corrigé
+| Constat | Correction |
+|---|---|
+| Sur « Temps écoulé », le seul gros bouton était « Demander plus de temps », et le texte relançait : « Demande à un parent s'il t'en faut encore. » C'est un nudge contraire au but de l'app (ICO 13). | Le bouton passe en secondaire (contour). Le texte est celui du compagnon : « C'est l'heure de ma sieste. Et toi, tu fais quoi ? » |
+| En thème clair, le gris des explications faisait 2,9:1, le rouge 3,2:1 et le bleu 3,6:1 : en dessous du minimum de 4,5:1. | Le gris passe à `#6C6C70` (4,7:1), le bleu à `#0062CC` (5,2:1) et le rouge à `#D70015` (4,8:1). |
+| « Bloquer maintenant » était en rouge, la couleur du danger, alors qu'arrêter de soi-même est le geste à encourager. | Il est maintenant dans la couleur du texte. |
+
+### Reste à faire
+- **Accueil** : « Demander plus de temps » est la première action, même quand il reste du temps. C'est une invitation permanente à en demander plus : le descendre ou le rendre plus discret.
+- **Choix des apps (onboarding)** : « Continuer » et « Plus tard » font la même chose. N'en garder qu'un.
+- **Lecteur d'écran** : le compagnon n'a pas de description. Ajouter « Okido est éveillé » ou « Okido dort ».
+- **Code des réglages** : le sous-titre s'adresse au parent (« Saisis ton code parent ») et l'aide juste dessous à l'enfant. Passer à un sous-titre neutre.
+- **Thème sombre** : le texte blanc sur le bouton bleu `#0A84FF` fait 3,6:1. Assombrir ce bleu.
+- **À refaire** à chaque nouvel écran.
 
 ## Règles pour les futures features
 

@@ -99,8 +99,9 @@ fun HomeScreen(
                     onClick = onMoreTime,
                 )
                 GroupedRow(
+                    // Stopping on one's own is welcome, so it is not shown as a danger.
                     label = "Bloquer maintenant",
-                    labelColor = MaterialTheme.colorScheme.error,
+                    labelColor = MaterialTheme.colorScheme.onSurface,
                     onClick = onLockNow,
                     showDivider = false,
                 )

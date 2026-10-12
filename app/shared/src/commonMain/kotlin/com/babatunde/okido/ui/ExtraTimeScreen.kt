@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -107,7 +106,7 @@ private fun TimeUpStep(
         Text(title, style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Tu as atteint ta limite de temps.\nDemande à un parent s'il t'en faut encore.",
+            text = "C'est l'heure de ma sieste.\nEt toi, tu fais quoi ?",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -117,7 +116,8 @@ private fun TimeUpStep(
             AlwaysAvailableApps(alwaysApps, icons, onLaunch)
         }
         Spacer(Modifier.weight(1f))
-        Button(
+        // Secondary on purpose: the screen's message is the pause, not asking for more.
+        OutlinedButton(
             onClick = onAskMoreTime,
             shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth().height(52.dp),
