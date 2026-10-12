@@ -155,8 +155,8 @@ private fun AppsStep(
             }
             item {
                 SectionText(
-                    text = "APPS · ${apps.count { it.access == AppAccess.Timed }} AVEC TEMPS · " +
-                        "${apps.count { it.access == AppAccess.Always }} TOUJOURS",
+                    text = "APPS · ${apps.count { it.access == AppAccess.Timed }} EN TEMPS LIMITÉ · " +
+                        "${apps.count { it.access == AppAccess.Always }} TOUJOURS OUVERTES",
                     modifier = Modifier.padding(start = 32.dp, bottom = 6.dp),
                 )
             }
@@ -176,9 +176,9 @@ private fun AppsStep(
             }
             item {
                 SectionText(
-                    text = "Avec temps : utilisable pendant le temps accordé. " +
-                        "Toujours : utilisable même quand le temps est écoulé, comme la radio. " +
-                        "Bloquée : n'apparaît pas sur l'accueil.",
+                    text = "Temps limité : utilisable pendant le temps accordé. " +
+                        "Toujours ouverte : utilisable même pendant la pause, comme la radio. " +
+                        "Toujours bloquée : n'apparaît pas sur l'accueil.",
                     modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 6.dp),
                 )
             }
@@ -188,7 +188,7 @@ private fun AppsStep(
 
 private val accessOptions = listOf(AppAccess.Blocked, AppAccess.Timed, AppAccess.Always)
 
-/** An app row with its access below, aligned with the label like an iOS subtitle. */
+/** An app row with its access below, aligned with the label like an iOS subtitle, the same in the onboarding and the settings. */
 @Composable
 internal fun AppAccessRow(
     setting: AppSetting,
@@ -196,22 +196,21 @@ internal fun AppAccessRow(
     onAccessChange: (AppAccess) -> Unit,
     showDivider: Boolean,
     modifier: Modifier = Modifier,
-    withIcons: Boolean = false,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         GroupedRow(
             label = setting.app.label,
             leading = { AppIcon(setting.app, icon, modifier = Modifier.size(32.dp)) },
-            trailing = if (withIcons) ({ AccessStatus(setting.access) }) else null,
+            trailing = { AccessStatus(setting.access) },
             showDivider = false,
         )
-        val controlModifier = Modifier.padding(start = 60.dp, end = 16.dp, bottom = 12.dp)
-        if (withIcons) {
-            SegmentedControl(accessOptions, setting.access, onAccessChange, controlModifier) { access, isSelected ->
-                AccessIcon(access, selected = isSelected)
-            }
-        } else {
-            SegmentedControl(accessOptions, setting.access, onAccessChange, label = { it.label() }, modifier = controlModifier)
+        SegmentedControl(
+            accessOptions,
+            setting.access,
+            onAccessChange,
+            Modifier.padding(start = 60.dp, end = 16.dp, bottom = 12.dp),
+        ) { access, isSelected ->
+            AccessIcon(access, selected = isSelected)
         }
         if (showDivider) {
             HorizontalDivider(
@@ -224,9 +223,9 @@ internal fun AppAccessRow(
 }
 
 internal fun AppAccess.label(): String = when (this) {
-    AppAccess.Blocked -> "Bloquée"
-    AppAccess.Timed -> "Avec temps"
-    AppAccess.Always -> "Toujours"
+    AppAccess.Blocked -> "Toujours bloquée"
+    AppAccess.Timed -> "Temps limité"
+    AppAccess.Always -> "Toujours ouverte"
 }
 
 @Composable

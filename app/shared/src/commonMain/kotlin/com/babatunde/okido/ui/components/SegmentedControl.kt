@@ -9,34 +9,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-/** iOS-style segmented control: a grey track with the selected segment raised on a white pill. */
-@Composable
-fun <T> SegmentedControl(
-    options: List<T>,
-    selected: T,
-    onSelect: (T) -> Unit,
-    label: (T) -> String,
-    modifier: Modifier = Modifier,
-) {
-    SegmentedControl(options, selected, onSelect, modifier) { option, isSelected ->
-        Text(
-            text = label(option),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-        )
-    }
-}
-
-/** Same control, with any [segment] content, such as an icon. */
+/** iOS-style segmented control: a grey track with the selected segment raised on a white pill, with any [segment] content, such as an icon. */
 @Composable
 fun <T> SegmentedControl(
     options: List<T>,

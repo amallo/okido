@@ -29,13 +29,6 @@ private fun AppAccess.color(): Color = when (this) {
     AppAccess.Always -> OkidoColors.Green
 }
 
-/** What the access means for the child, shown beside the app's name. */
-private fun AppAccess.status(): String = when (this) {
-    AppAccess.Blocked -> "toujours bloquée"
-    AppAccess.Timed -> "temps limité"
-    AppAccess.Always -> "toujours ouverte"
-}
-
 /** An access as an icon, in its color when [selected], named for screen readers. */
 @Composable
 internal fun AccessIcon(access: AppAccess, selected: Boolean = true, modifier: Modifier = Modifier.size(20.dp)) {
@@ -49,5 +42,5 @@ internal fun AccessIcon(access: AppAccess, selected: Boolean = true, modifier: M
 
 @Composable
 internal fun AccessStatus(access: AppAccess) {
-    Text(text = access.status(), style = MaterialTheme.typography.bodyMedium, color = access.color())
+    Text(text = access.label(), style = MaterialTheme.typography.bodyMedium, color = access.color())
 }

@@ -271,7 +271,6 @@ private fun ChooseAppsPage(
                         .padding(horizontal = 16.dp)
                         .clip(cardSlice(isFirst = index == 0, isLast = isLast))
                         .background(MaterialTheme.colorScheme.surfaceContainer),
-                    withIcons = true,
                 )
             }
         }
