@@ -71,8 +71,8 @@ fun OnboardingScreen(
                     OnboardingPage.Welcome -> InfoPage(
                         illustration = { IconBadge(Res.drawable.hourglass, Color.White, tint = Color.Unspecified) },
                         title = "Bienvenue sur Okido",
-                        body = "Choisis les apps de ton enfant et le temps à y passer. " +
-                            "Quand le temps est écoulé, l'écran se verrouille jusqu'à ce que tu en accordes plus.",
+                        body = "Choisis les apps de cet appareil et le temps à y passer. " +
+                            "Quand le temps est écoulé, l'écran se verrouille jusqu'à ce qu'un parent en accorde plus.",
                         action = "Continuer",
                         onAction = onContinue,
                     )
@@ -234,7 +234,7 @@ private fun ChooseAppsPage(
                     Text("Quelles apps autoriser ?", style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text = "Ton enfant ne voit sur l'accueil d'Okido que les apps que tu autorises. " +
+                        text = "L'accueil d'Okido ne montre que les apps autorisées. " +
                             "Toutes les autres sont bloquées.",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -242,7 +242,7 @@ private fun ChooseAppsPage(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Tu pourras changer ce choix dans les réglages parent.",
+                        text = "Un parent pourra changer ce choix dans les réglages parent.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,

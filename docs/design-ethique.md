@@ -39,7 +39,7 @@ Okido s'adresse à des enfants. La barre est donc plus haute que pour une app gr
 |---|---|---|
 | Aucune donnée collectée ni envoyée | ✅ | Le manifeste ne demande pas la permission `INTERNET`. Pas de compte, aucune dépendance d'analytics. |
 | Pas de surveillance de l'activité | ✅ | Aucun historique : seule la session en cours est gardée (`SessionProgress`). Le parent ne voit pas ce que l'enfant a fait. |
-| L'enfant sait que le contrôle est actif (ICO 11) | ✅ | Le compagnon et les minutes restantes sont visibles à l'accueil, puis l'écran « Temps écoulé ». |
+| L'enfant sait que le contrôle est actif (ICO 11) | ✅ | Le compagnon et les minutes restantes sont visibles à l'accueil, puis l'écran « Bonne pause ! ». |
 | Réglages protecteurs par défaut (ICO 7) | ✅ | Passer l'étape des apps à l'onboarding laisse toutes les apps bloquées. |
 | Pas de récompense aléatoire, pas de notification | ✅ | Le compagnon ne réagit à rien et ne réclame jamais l'enfant (voir `docs/idees/compagnon.md`). |
 | La récompense n'est jamais du temps d'écran | ✅ | C'est une règle produit. |
@@ -65,12 +65,12 @@ Fait le 12/10/2026 : on a passé chaque écran au crible de la méthode Designer
 ### Corrigé
 | Constat | Correction |
 |---|---|
-| Sur « Temps écoulé », le seul gros bouton était « Demander plus de temps », et le texte relançait : « Demande à un parent s'il t'en faut encore. » C'est un nudge contraire au but de l'app (ICO 13). | Le bouton passe en secondaire (contour). Le texte est celui du compagnon : « C'est l'heure de ma sieste. Et toi, tu fais quoi ? » |
+| Sur l'écran de fin du temps, le seul gros bouton était « Demander plus de temps », et le texte relançait : « Demande à un parent s'il t'en faut encore. » C'est un nudge contraire au but de l'app (ICO 13). | Le bouton passe en secondaire (contour). Le titre « Temps écoulé », sec comme un verdict, devient « Bonne pause ! ». Le texte est celui du compagnon : « C'est l'heure de ma sieste. Et toi, tu fais quoi ? » |
 | En thème clair, le gris des explications faisait 2,9:1, le rouge 3,2:1 et le bleu 3,6:1 : en dessous du minimum de 4,5:1. | Le gris passe à `#6C6C70` (4,7:1), le bleu à `#0062CC` (5,2:1) et le rouge à `#D70015` (4,8:1). |
-| « Bloquer maintenant » était en rouge, la couleur du danger, alors qu'arrêter de soi-même est le geste à encourager. | Il est maintenant dans la couleur du texte. |
+| « Bloquer maintenant » était en rouge, la couleur du danger, et son nom sonnait comme une punition, alors qu'arrêter de soi-même est le geste à encourager. | Il devient « J'ai fini », dans la couleur du texte. |
+| À l'accueil, « Demander plus de temps » était la première action, en bleu, même quand il restait du temps : une invitation permanente à en demander plus. | « J'ai fini » devient le bouton principal. « Demander plus de temps » n'est plus qu'un lien gris en dessous. |
 
 ### Reste à faire
-- **Accueil** : « Demander plus de temps » est la première action, même quand il reste du temps. C'est une invitation permanente à en demander plus : le descendre ou le rendre plus discret.
 - **Choix des apps (onboarding)** : « Continuer » et « Plus tard » font la même chose. N'en garder qu'un.
 - **Lecteur d'écran** : le compagnon n'a pas de description. Ajouter « Okido est éveillé » ou « Okido dort ».
 - **Code des réglages** : le sous-titre s'adresse au parent (« Saisis ton code parent ») et l'aide juste dessous à l'enfant. Passer à un sous-titre neutre.
@@ -86,6 +86,7 @@ Fait le 12/10/2026 : on a passé chaque écran au crible de la méthode Designer
 - Aucun personnage ne montre de joie liée à l'écran, ni de tristesse ou de fatigue liée à la fin du temps.
 - Les réglages par défaut sont les plus protecteurs.
 - Les choix du parent sont présentés honnêtement, sans culpabiliser.
+- Les textes restent justes même lus par un enfant : on parle de l'appareil et des parents, jamais de « ton enfant ».
 - Jamais de pub, jamais de sponsor, des liens neutres.
 - Achat unique, et aucune fonction de protection réservée à la version payante.
 

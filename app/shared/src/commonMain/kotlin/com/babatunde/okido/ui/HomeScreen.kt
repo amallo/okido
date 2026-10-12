@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,9 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.Companion
-import com.babatunde.okido.ui.components.GroupedRow
-import com.babatunde.okido.ui.components.GroupedSection
 import com.babatunde.okido.ui.theme.OkidoTheme
+import okido.shared.generated.resources.Res
+import okido.shared.generated.resources.timer
+import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -92,18 +96,20 @@ fun HomeScreen(
                     }
                 }
             }
-            GroupedSection(modifier = Modifier.padding(top = 8.dp)) {
-                GroupedRow(
-                    label = "Demander plus de temps",
-                    labelColor = MaterialTheme.colorScheme.primary,
-                    onClick = onMoreTime,
-                )
-                GroupedRow(
-                    // Stopping on one's own is welcome, so it is not shown as a danger.
-                    label = "Bloquer maintenant",
-                    labelColor = MaterialTheme.colorScheme.onSurface,
-                    onClick = onLockNow,
-                    showDivider = false,
+            // Stopping on one's own is the primary action, in the child's words; asking for more stays a plain
+            // link, so the screen never invites the child to want more time.
+            Button(
+                onClick = onLockNow,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).height(52.dp),
+            ) {
+                Text("J'ai fini", style = MaterialTheme.typography.titleMedium)
+            }
+            TextButton(onClick = onMoreTime, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(
+                    "Demander plus de temps",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             TextButton(onClick = onParentSettings, modifier = Modifier.align(Alignment.CenterHorizontally)) {
@@ -123,6 +129,12 @@ private fun TimePill(remaining: Duration) {
             .padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Icon(
+            painter = painterResource(Res.drawable.timer),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+        )
+        Spacer(Modifier.width(6.dp))
         Text("${remainingMinutes(remaining)} min", style = MaterialTheme.typography.titleMedium)
     }
 }

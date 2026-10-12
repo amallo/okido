@@ -76,7 +76,7 @@ fun App(
         }
         when (val state = home) {
             is HomeUiState.Locked -> ExtraTimeScreen(
-                title = "Temps écoulé",
+                title = "Bonne pause !",
                 state = extraTime,
                 alwaysApps = state.alwaysApps,
                 icons = state.icons,

@@ -21,7 +21,7 @@ Le parent loin de l'enfant n'est pas concerné. Ce cas sera couvert par les plag
 3. L'enfant scanne. C'est fait.
 
 **Pendant le trajet**
-1. Sur l'écran « Temps écoulé », l'enfant touche « Scanner le code du parent ».
+1. Sur l'écran « Bonne pause ! », l'enfant touche « Scanner le code du parent ».
 2. Le parent choisit « +30 min » et lui tend son écran.
 3. Scan : le temps est accordé. Le parent n'a ni touché le téléphone de l'enfant, ni tapé son code devant lui.
 
@@ -106,7 +106,7 @@ Elle respecte les règles de `app/CLAUDE.md` :
 **UI**
 - Onboarding : écran du choix du rôle.
 - Enfant :
-  - bouton « Scanner le code du parent » sur l'écran « Temps écoulé » ;
+  - bouton « Scanner le code du parent » sur l'écran « Bonne pause ! » ;
   - section « Téléphones parent » dans les réglages parent (associer, retirer).
 - Parent : accueil avec les durées et l'écran du QR code.
 

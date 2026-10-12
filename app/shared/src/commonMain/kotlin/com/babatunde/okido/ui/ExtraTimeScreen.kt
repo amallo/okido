@@ -52,7 +52,7 @@ private fun Duration.label(): String =
  */
 @Composable
 fun ExtraTimeScreen(
-    title: String = "Temps écoulé",
+    title: String = "Bonne pause !",
     state: ExtraTimeUiState = ExtraTimeUiState(),
     alwaysApps: List<LaunchableApp> = emptyList(),
     icons: Map<String, ImageBitmap> = emptyMap(),

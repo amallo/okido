@@ -8,7 +8,7 @@ Son humeur ne dépend jamais du temps d'écran : il est toujours serein. Seule s
 
 ## Le besoin
 
-Aujourd'hui, la fin du temps est une coupure sèche : l'écran « Temps écoulé ».
+Au départ, la fin du temps était une coupure sèche : un écran « Temps écoulé ».
 
 On cherche plutôt à **donner envie** de se passer de l'écran, avec quatre contraintes :
 - aucun contenu à tenir à jour ;
@@ -19,7 +19,7 @@ On cherche plutôt à **donner envie** de se passer de l'écran, avec quatre con
 ## L'idée
 
 - **Éveillé** : à l'accueil, quand il reste du temps. Il est calme, les yeux ouverts et la bouche neutre, et son sable monte petit à petit. Il ne sourit pas : l'écran ne doit pas être ce qui le rend content.
-- **Endormi** : à l'écran « Temps écoulé ». Il dort paisiblement, avec un petit sourire : « C'est l'heure de ma sieste. Et toi, tu fais quoi ? »
+- **Endormi** : à l'écran « Bonne pause ! ». Il dort paisiblement, avec un petit sourire : « C'est l'heure de ma sieste. Et toi, tu fais quoi ? »
 - **Au retour**, après une pause, il est de nouveau éveillé.
 
 L'enfant n'est pas privé d'écran, et il n'a pas épuisé son compagnon : c'est simplement l'heure de sa sieste.
