@@ -27,6 +27,24 @@ fun <T> SegmentedControl(
     label: (T) -> String,
     modifier: Modifier = Modifier,
 ) {
+    SegmentedControl(options, selected, onSelect, modifier) { option, isSelected ->
+        Text(
+            text = label(option),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+        )
+    }
+}
+
+/** Same control, with any [segment] content, such as an icon. */
+@Composable
+fun <T> SegmentedControl(
+    options: List<T>,
+    selected: T,
+    onSelect: (T) -> Unit,
+    modifier: Modifier = Modifier,
+    segment: @Composable (option: T, isSelected: Boolean) -> Unit,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -55,11 +73,7 @@ fun <T> SegmentedControl(
                     .clickable { onSelect(option) },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = label(option),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                )
+                segment(option, isSelected)
             }
         }
     }

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -28,6 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.babatunde.okido.core.AppAccess
+import com.babatunde.okido.core.AppSetting
+import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.Companion
 import com.babatunde.okido.ui.components.PinPad
 import com.babatunde.okido.ui.theme.OkidoColors
@@ -39,7 +44,7 @@ import okido.shared.generated.resources.lock
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-/** First launch only: what Okido does, how much screen time is advised, the privacy promise, the parent PIN, then turning blocking on. */
+/** First launch only: what Okido does, how much screen time is advised, the privacy promise, the parent PIN, the allowed apps, then turning blocking on. */
 @Composable
 fun OnboardingScreen(
     state: OnboardingUiState,
@@ -47,6 +52,7 @@ fun OnboardingScreen(
     onBack: () -> Unit = {},
     onPinChange: (String) -> Unit = {},
     onSubmitPin: () -> Unit = {},
+    onAccessChange: (AppSetting, AppAccess) -> Unit = { _, _ -> },
     onOpenSettings: () -> Unit = {},
     onDecline: () -> Unit = {},
 ) {
@@ -97,6 +103,7 @@ fun OnboardingScreen(
                         onSubmit = onSubmitPin,
                         modifier = Modifier.align(Alignment.Center),
                     )
+                    OnboardingPage.ChooseApps -> ChooseAppsPage(state, onAccessChange, onContinue)
                     OnboardingPage.EnableBlocking -> InfoPage(
                         illustration = { IconBadge(Res.drawable.accessibility, OkidoColors.Blue) },
                         title = "Autoriser Okido à bloquer les apps",
@@ -131,13 +138,14 @@ private fun OnboardingPage.dotIndex(): Int = when (this) {
     OnboardingPage.Guidelines -> 1
     OnboardingPage.Privacy -> 2
     OnboardingPage.CreatePin, OnboardingPage.ConfirmPin -> 3
-    OnboardingPage.EnableBlocking, OnboardingPage.Done -> 4
+    OnboardingPage.ChooseApps -> 4
+    OnboardingPage.EnableBlocking, OnboardingPage.Done -> 5
 }
 
 @Composable
 private fun ProgressDots(current: Int, modifier: Modifier = Modifier) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        repeat(5) { index ->
+        repeat(6) { index ->
             val color = if (index == current) {
                 MaterialTheme.colorScheme.primary
             } else {
@@ -205,6 +213,69 @@ private fun GuidelinesPage(onContinue: () -> Unit) {
             Text("Continuer", style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(16.dp))
+    }
+}
+
+/** The same rows as in the parent settings, where the choice can be changed later. */
+@Composable
+private fun ChooseAppsPage(
+    state: OnboardingUiState,
+    onAccessChange: (AppSetting, AppAccess) -> Unit,
+    onContinue: () -> Unit,
+) {
+    val apps = state.apps
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text("Quelles apps autoriser ?", style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = "Ton enfant ne voit sur l'accueil d'Okido que les apps que tu autorises. " +
+                            "Toutes les autres sont bloquées.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "Tu pourras changer ce choix dans les réglages parent.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+            itemsIndexed(apps, key = { _, setting -> setting.app.id }) { index, setting ->
+                val isLast = index == apps.lastIndex
+                AppAccessRow(
+                    setting = setting,
+                    icon = state.icons[setting.app.id],
+                    onAccessChange = { onAccessChange(setting, it) },
+                    showDivider = !isLast,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clip(cardSlice(isFirst = index == 0, isLast = isLast))
+                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                    withIcons = true,
+                )
+            }
+        }
+        Button(
+            onClick = onContinue,
+            shape = RoundedCornerShape(14.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 32.dp, end = 32.dp, top = 16.dp).height(52.dp),
+        ) {
+            Text("Continuer", style = MaterialTheme.typography.titleMedium)
+        }
+        // Skipping leaves every app blocked; the parent settings are there for later.
+        TextButton(onClick = onContinue, modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)) {
+            Text("Plus tard", style = MaterialTheme.typography.bodyLarge)
+        }
+        Spacer(Modifier.height(8.dp))
     }
 }
 
@@ -296,6 +367,23 @@ private fun PrivacyPreview() {
 @Preview
 private fun CreatePinPreview() {
     OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.CreatePin, pin = "25")) }
+}
+
+@Composable
+@Preview
+private fun ChooseAppsPreview() {
+    OkidoTheme {
+        OnboardingScreen(
+            OnboardingUiState(
+                page = OnboardingPage.ChooseApps,
+                apps = listOf(
+                    AppSetting(LaunchableApp(id = "com.example.camera", label = "Appareil photo"), AppAccess.Blocked),
+                    AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), AppAccess.Timed),
+                    AppSetting(LaunchableApp(id = "com.example.radio", label = "Radio"), AppAccess.Always),
+                ),
+            ),
+        )
+    }
 }
 
 @Composable

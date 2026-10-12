@@ -1,3 +1,3 @@
 package com.babatunde.okido.core
 
-enum class OnboardingStep { Introduction, EnableBlocking, Done }
+enum class OnboardingStep { Introduction, ChooseApps, EnableBlocking, Done }

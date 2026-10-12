@@ -14,15 +14,22 @@ class NextOnboardingStepTest {
     }
 
     @Test
-    fun asksToEnableBlockingOnceThePinIsSet() {
+    fun asksToChooseTheAppsOnceThePinIsSet() {
         val nextOnboardingStep = NextOnboardingStep(FakeOnboardingStore(), FakeParentPin("1234"), FakeBlockingService())
+
+        assertEquals(OnboardingStep.ChooseApps, nextOnboardingStep())
+    }
+
+    @Test
+    fun asksToEnableBlockingOnceTheAppsAreChosen() {
+        val nextOnboardingStep = NextOnboardingStep(FakeOnboardingStore(appsChosen = true), FakeParentPin("1234"), FakeBlockingService())
 
         assertEquals(OnboardingStep.EnableBlocking, nextOnboardingStep())
     }
 
     @Test
     fun completesTheOnboardingOnceBlockingIsEnabled() {
-        val onboardingStore = FakeOnboardingStore()
+        val onboardingStore = FakeOnboardingStore(appsChosen = true)
         val nextOnboardingStep = NextOnboardingStep(onboardingStore, FakeParentPin("1234"), FakeBlockingService(enabled = true))
 
         assertEquals(OnboardingStep.Done, nextOnboardingStep())

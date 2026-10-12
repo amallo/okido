@@ -12,6 +12,7 @@ class NextOnboardingStep(
     operator fun invoke(): OnboardingStep {
         if (onboardingStore.isCompleted()) return OnboardingStep.Done
         if (!parentPin.isSet()) return OnboardingStep.Introduction
+        if (!onboardingStore.areAppsChosen()) return OnboardingStep.ChooseApps
         if (!blockingService.isEnabled()) return OnboardingStep.EnableBlocking
         onboardingStore.complete()
         return OnboardingStep.Done

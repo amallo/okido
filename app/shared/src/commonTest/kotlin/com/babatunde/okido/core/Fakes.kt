@@ -67,8 +67,12 @@ class FakeAppAccessStore(
         (accesses[appId] ?: AppAccess.Blocked).isOpen(now, unlockedUntil)
 }
 
-class FakeOnboardingStore(var completed: Boolean = false) : OnboardingStore {
+class FakeOnboardingStore(var completed: Boolean = false, var appsChosen: Boolean = false) : OnboardingStore {
     override fun isCompleted(): Boolean = completed
+    override fun areAppsChosen(): Boolean = appsChosen
+    override fun chooseApps() {
+        appsChosen = true
+    }
     override fun complete() {
         completed = true
     }

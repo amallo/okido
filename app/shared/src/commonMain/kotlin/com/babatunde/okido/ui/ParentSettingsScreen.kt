@@ -186,26 +186,29 @@ private val accessOptions = listOf(AppAccess.Blocked, AppAccess.Timed, AppAccess
 
 /** An app row with its access below, aligned with the label like an iOS subtitle. */
 @Composable
-private fun AppAccessRow(
+internal fun AppAccessRow(
     setting: AppSetting,
     icon: ImageBitmap?,
     onAccessChange: (AppAccess) -> Unit,
     showDivider: Boolean,
     modifier: Modifier = Modifier,
+    withIcons: Boolean = false,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         GroupedRow(
             label = setting.app.label,
             leading = { AppIcon(setting.app, icon, modifier = Modifier.size(32.dp)) },
+            trailing = if (withIcons) ({ AccessStatus(setting.access) }) else null,
             showDivider = false,
         )
-        SegmentedControl(
-            options = accessOptions,
-            selected = setting.access,
-            onSelect = onAccessChange,
-            label = { it.label() },
-            modifier = Modifier.padding(start = 60.dp, end = 16.dp, bottom = 12.dp),
-        )
+        val controlModifier = Modifier.padding(start = 60.dp, end = 16.dp, bottom = 12.dp)
+        if (withIcons) {
+            SegmentedControl(accessOptions, setting.access, onAccessChange, controlModifier) { access, isSelected ->
+                AccessIcon(access, selected = isSelected)
+            }
+        } else {
+            SegmentedControl(accessOptions, setting.access, onAccessChange, label = { it.label() }, modifier = controlModifier)
+        }
         if (showDivider) {
             HorizontalDivider(
                 modifier = Modifier.padding(start = 60.dp),
@@ -216,7 +219,7 @@ private fun AppAccessRow(
     }
 }
 
-private fun AppAccess.label(): String = when (this) {
+internal fun AppAccess.label(): String = when (this) {
     AppAccess.Blocked -> "Bloquée"
     AppAccess.Timed -> "Avec temps"
     AppAccess.Always -> "Toujours"
@@ -232,7 +235,7 @@ private fun SectionText(text: String, modifier: Modifier = Modifier) {
     )
 }
 
-private fun cardSlice(isFirst: Boolean, isLast: Boolean): RoundedCornerShape {
+internal fun cardSlice(isFirst: Boolean, isLast: Boolean): RoundedCornerShape {
     val top = if (isFirst) 12.dp else 0.dp
     val bottom = if (isLast) 12.dp else 0.dp
     return RoundedCornerShape(topStart = top, topEnd = top, bottomStart = bottom, bottomEnd = bottom)

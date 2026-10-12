@@ -8,6 +8,7 @@ import com.babatunde.okido.core.CreateParentPin
 import com.babatunde.okido.core.GrantExtraTime
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LockNow
+import com.babatunde.okido.core.FinishChoosingApps
 import com.babatunde.okido.core.NextOnboardingStep
 import com.babatunde.okido.core.OpenBlockingSettings
 import com.babatunde.okido.core.RemainingTime
@@ -33,6 +34,7 @@ val coreModule = module {
     factoryOf(::AllowedApps)
     factoryOf(::AlwaysAllowedApps)
     factoryOf(::NextOnboardingStep)
+    factoryOf(::FinishChoosingApps)
     factoryOf(::CreateParentPin)
     factoryOf(::ChangeParentPin)
     factoryOf(::OpenBlockingSettings)

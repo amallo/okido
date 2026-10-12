@@ -54,6 +54,7 @@ fun App(
                 onBack = onboardingViewModel::onBack,
                 onPinChange = onboardingViewModel::onPinChange,
                 onSubmitPin = onboardingViewModel::onSubmitPin,
+                onAccessChange = onboardingViewModel::onAccessChange,
                 onOpenSettings = onboardingViewModel::onOpenSettings,
                 onDecline = onboardingViewModel::onDecline,
             )
