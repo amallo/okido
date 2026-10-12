@@ -5,6 +5,7 @@ import com.babatunde.okido.core.providers.AppAccessStore
 import com.babatunde.okido.core.providers.AppCatalog
 import com.babatunde.okido.core.providers.BlockingService
 import com.babatunde.okido.core.providers.Clock
+import com.babatunde.okido.core.providers.HomeApp
 import com.babatunde.okido.core.providers.OnboardingStore
 import com.babatunde.okido.core.providers.ParentPin
 import com.babatunde.okido.core.providers.ScreenLocker
@@ -75,6 +76,14 @@ class FakeOnboardingStore(var completed: Boolean = false, var appsChosen: Boolea
     }
     override fun complete() {
         completed = true
+    }
+}
+
+class FakeHomeApp(private val okido: Boolean = false) : HomeApp {
+    var settingsOpened = false
+    override fun isOkido(): Boolean = okido
+    override fun openSettings() {
+        settingsOpened = true
     }
 }
 

@@ -1,6 +1,8 @@
 package com.babatunde.okido.infra
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
@@ -42,6 +44,11 @@ class OkidoAccessibilityService : AccessibilityService(), KoinComponent {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val packageName = event.packageName?.toString() ?: return
+        // Until the parent makes Okido the home app, the home button opens the system launcher: bring Okido back.
+        if (packageName != this.packageName && packageName == systemHomePackage()) {
+            screenLocker.lock()
+            return
+        }
         // The keyboard and screens without a launcher icon (system UI, Google sign-in, permission and
         // share dialogs) show over the app in front, which stays the one to check.
         if (packageName != this.packageName && (!appCatalog.isLaunchable(packageName) || packageName == keyboardPackage())) return
@@ -54,6 +61,13 @@ class OkidoAccessibilityService : AccessibilityService(), KoinComponent {
     private fun lockIfNotAllowed(packageName: String) {
         if (packageName == this.packageName) return
         if (!appAccessStore.canUse(packageName, clock.now())) screenLocker.lock()
+    }
+
+    /** The home app Android opens on the home button, or null while it would still ask which one to use. */
+    private fun systemHomePackage(): String? {
+        val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+        return packageManager.resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY)
+            ?.activityInfo?.packageName?.takeIf { it != "android" }
     }
 
     private fun keyboardPackage(): String? =

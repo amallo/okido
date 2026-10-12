@@ -12,6 +12,7 @@ import com.babatunde.okido.core.FinishChoosingApps
 import com.babatunde.okido.core.NextOnboardingStep
 import com.babatunde.okido.core.OnboardingStep
 import com.babatunde.okido.core.OpenBlockingSettings
+import com.babatunde.okido.core.OpenHomeSettings
 import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.providers.AppIconLoader
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-enum class OnboardingPage { Welcome, Guidelines, Privacy, CreatePin, ConfirmPin, ChooseApps, EnableBlocking, Done }
+enum class OnboardingPage { Welcome, Guidelines, Privacy, CreatePin, ConfirmPin, ChooseApps, EnableBlocking, SetAsHome, Done }
 
 private val introductionPages = listOf(OnboardingPage.Welcome, OnboardingPage.Guidelines, OnboardingPage.Privacy, OnboardingPage.CreatePin, OnboardingPage.ConfirmPin)
 
@@ -41,6 +42,7 @@ class OnboardingViewModel(
     private val nextOnboardingStep: NextOnboardingStep,
     private val createParentPin: CreateParentPin,
     private val openBlockingSettings: OpenBlockingSettings,
+    private val openHomeSettings: OpenHomeSettings,
     private val appSettings: AppSettings,
     private val appIconLoader: AppIconLoader,
     private val setAppAccess: SetAppAccess,
@@ -53,7 +55,7 @@ class OnboardingViewModel(
         loadAppsIfChoosing()
     }
 
-    /** Called when Okido comes back to the foreground, e.g. after enabling blocking in Android settings. */
+    /** Called when Okido comes back to the foreground, e.g. after enabling blocking or choosing the home app in Android settings. */
     fun refresh() {
         _state.update { it.copy(page = nextPage(it.page)) }
     }
@@ -118,6 +120,10 @@ class OnboardingViewModel(
         openBlockingSettings()
     }
 
+    fun onSetAsHome() {
+        openHomeSettings()
+    }
+
     fun onDecline() {
         _state.update { it.copy(blockingDeclined = true) }
     }
@@ -127,6 +133,7 @@ class OnboardingViewModel(
         OnboardingStep.Introduction -> if (current in introductionPages) current else OnboardingPage.Welcome
         OnboardingStep.ChooseApps -> OnboardingPage.ChooseApps
         OnboardingStep.EnableBlocking -> OnboardingPage.EnableBlocking
+        OnboardingStep.SetAsHome -> OnboardingPage.SetAsHome
         OnboardingStep.Done -> OnboardingPage.Done
     }
 

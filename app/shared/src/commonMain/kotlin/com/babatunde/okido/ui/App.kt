@@ -63,6 +63,7 @@ fun App(
                 onAccessChange = onboardingViewModel::onAccessChange,
                 onOpenSettings = onboardingViewModel::onOpenSettings,
                 onDecline = onboardingViewModel::onDecline,
+                onSetAsHome = onboardingViewModel::onSetAsHome,
             )
             return@OkidoTheme
         }

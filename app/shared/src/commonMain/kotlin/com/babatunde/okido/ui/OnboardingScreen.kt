@@ -55,6 +55,7 @@ fun OnboardingScreen(
     onAccessChange: (AppSetting, AppAccess) -> Unit = { _, _ -> },
     onOpenSettings: () -> Unit = {},
     onDecline: () -> Unit = {},
+    onSetAsHome: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize().safeContentPadding()) {
@@ -123,6 +124,15 @@ fun OnboardingScreen(
                             null
                         },
                     )
+                    OnboardingPage.SetAsHome -> InfoPage(
+                        illustration = { IconBadge(Res.drawable.hourglass, Color.White, tint = Color.Unspecified) },
+                        title = "Faire d'Okido l'écran d'accueil",
+                        body = "Le bouton d'accueil du téléphone ramène alors toujours sur Okido, " +
+                            "et jamais sur les autres apps.\n\n" +
+                            "Les réglages d'Android s'ouvrent : choisis « Okido » comme appli d'écran d'accueil.",
+                        action = "Choisir Okido",
+                        onAction = onSetAsHome,
+                    )
                     OnboardingPage.Done -> Unit
                 }
             }
@@ -139,13 +149,14 @@ private fun OnboardingPage.dotIndex(): Int = when (this) {
     OnboardingPage.Privacy -> 2
     OnboardingPage.CreatePin, OnboardingPage.ConfirmPin -> 3
     OnboardingPage.ChooseApps -> 4
-    OnboardingPage.EnableBlocking, OnboardingPage.Done -> 5
+    OnboardingPage.EnableBlocking -> 5
+    OnboardingPage.SetAsHome, OnboardingPage.Done -> 6
 }
 
 @Composable
 private fun ProgressDots(current: Int, modifier: Modifier = Modifier) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        repeat(6) { index ->
+        repeat(7) { index ->
             val color = if (index == current) {
                 MaterialTheme.colorScheme.primary
             } else {
@@ -390,6 +401,12 @@ private fun ChooseAppsPreview() {
 @Preview
 private fun EnableBlockingPreview() {
     OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.EnableBlocking)) }
+}
+
+@Composable
+@Preview
+private fun SetAsHomePreview() {
+    OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.SetAsHome)) }
 }
 
 @Composable
