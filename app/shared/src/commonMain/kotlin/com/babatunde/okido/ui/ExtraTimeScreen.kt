@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.babatunde.okido.core.GrantExtraTimeResult
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.ui.components.BlockingOffBanner
 import com.babatunde.okido.ui.components.Companion
 import com.babatunde.okido.ui.components.ChildErrorMessage
 import com.babatunde.okido.ui.components.ChildHint
@@ -56,6 +57,7 @@ fun ExtraTimeScreen(
     state: ExtraTimeUiState = ExtraTimeUiState(),
     alwaysApps: List<LaunchableApp> = emptyList(),
     icons: Map<String, ImageBitmap> = emptyMap(),
+    blockingEnabled: Boolean = true,
     onLaunch: (LaunchableApp) -> Unit = {},
     onPinChange: (String) -> Unit = {},
     onSubmitPin: () -> Unit = {},
@@ -79,6 +81,7 @@ fun ExtraTimeScreen(
                 title = title,
                 alwaysApps = alwaysApps,
                 icons = icons,
+                blockingEnabled = blockingEnabled,
                 onLaunch = onLaunch,
                 onAskMoreTime = { askingCode = true },
                 onParentSettings = onParentSettings,
@@ -92,6 +95,7 @@ private fun TimeUpStep(
     title: String,
     alwaysApps: List<LaunchableApp>,
     icons: Map<String, ImageBitmap>,
+    blockingEnabled: Boolean,
     onLaunch: (LaunchableApp) -> Unit,
     onAskMoreTime: () -> Unit,
     onParentSettings: (() -> Unit)?,
@@ -100,6 +104,7 @@ private fun TimeUpStep(
         modifier = Modifier.fillMaxSize().safeContentPadding().padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        if (!blockingEnabled) BlockingOffBanner(Modifier.padding(top = 8.dp))
         Spacer(Modifier.weight(1f))
         Companion(sleepiness = 1f, modifier = Modifier.size(140.dp))
         Spacer(Modifier.height(24.dp))

@@ -6,12 +6,14 @@ import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.ChangeParentPin
 import com.babatunde.okido.core.CreateParentPin
 import com.babatunde.okido.core.GrantExtraTime
+import com.babatunde.okido.core.IsBlockingEnabled
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LockNow
 import com.babatunde.okido.core.FinishChoosingApps
 import com.babatunde.okido.core.NextOnboardingStep
 import com.babatunde.okido.core.OpenBlockingSettings
 import com.babatunde.okido.core.OpenHomeSettings
+import com.babatunde.okido.core.ReadBlockingWarning
 import com.babatunde.okido.core.RemainingTime
 import com.babatunde.okido.core.SessionProgress
 import com.babatunde.okido.core.SetAppAccess
@@ -40,6 +42,8 @@ val coreModule = module {
     factoryOf(::ChangeParentPin)
     factoryOf(::OpenBlockingSettings)
     factoryOf(::OpenHomeSettings)
+    factoryOf(::IsBlockingEnabled)
+    factoryOf(::ReadBlockingWarning)
 }
 
 fun initKoin(config: KoinAppDeclaration) {

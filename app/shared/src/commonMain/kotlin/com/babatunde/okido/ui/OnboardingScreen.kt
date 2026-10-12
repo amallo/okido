@@ -44,7 +44,8 @@ import okido.shared.generated.resources.lock
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-/** First launch only: what Okido does, how much screen time is advised, the privacy promise, the parent PIN, the allowed apps, then turning blocking on. */
+/** First launch only: what Okido does, how much screen time is advised, the privacy promise, the parent PIN, the allowed apps, turning blocking on and
+ * warning that it can stop, then making Okido the home app. */
 @Composable
 fun OnboardingScreen(
     state: OnboardingUiState,
@@ -124,6 +125,16 @@ fun OnboardingScreen(
                             null
                         },
                     )
+                    OnboardingPage.BlockingCanStop -> InfoPage(
+                        illustration = { IconBadge(Res.drawable.accessibility, OkidoColors.Orange) },
+                        title = "Le blocage peut s'arrêter",
+                        body = "Le service d'accessibilité peut être désactivé dans les réglages d'Android. " +
+                            "Android peut aussi l'arrêter de lui-même, par exemple après une mise à jour.\n\n" +
+                            "Si cela arrive, Okido le signale sur l'accueil et dans les réglages parent, " +
+                            "d'où un parent peut le réactiver.",
+                        action = "J'ai compris",
+                        onAction = onContinue,
+                    )
                     OnboardingPage.SetAsHome -> InfoPage(
                         illustration = { IconBadge(Res.drawable.hourglass, Color.White, tint = Color.Unspecified) },
                         title = "Faire d'Okido l'écran d'accueil",
@@ -149,7 +160,7 @@ private fun OnboardingPage.dotIndex(): Int = when (this) {
     OnboardingPage.Privacy -> 2
     OnboardingPage.CreatePin, OnboardingPage.ConfirmPin -> 3
     OnboardingPage.ChooseApps -> 4
-    OnboardingPage.EnableBlocking -> 5
+    OnboardingPage.EnableBlocking, OnboardingPage.BlockingCanStop -> 5
     OnboardingPage.SetAsHome, OnboardingPage.Done -> 6
 }
 
@@ -400,6 +411,12 @@ private fun ChooseAppsPreview() {
 @Preview
 private fun EnableBlockingPreview() {
     OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.EnableBlocking)) }
+}
+
+@Composable
+@Preview
+private fun BlockingCanStopPreview() {
+    OkidoTheme { OnboardingScreen(OnboardingUiState(page = OnboardingPage.BlockingCanStop)) }
 }
 
 @Composable

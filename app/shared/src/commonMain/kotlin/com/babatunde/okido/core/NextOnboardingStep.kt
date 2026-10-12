@@ -16,6 +16,7 @@ class NextOnboardingStep(
         if (!parentPin.isSet()) return OnboardingStep.Introduction
         if (!onboardingStore.areAppsChosen()) return OnboardingStep.ChooseApps
         if (!blockingService.isEnabled()) return OnboardingStep.EnableBlocking
+        if (!onboardingStore.isBlockingWarningRead()) return OnboardingStep.BlockingCanStop
         if (!homeApp.isOkido()) return OnboardingStep.SetAsHome
         onboardingStore.complete()
         return OnboardingStep.Done

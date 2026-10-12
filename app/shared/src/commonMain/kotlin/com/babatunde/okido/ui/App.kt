@@ -38,6 +38,7 @@ fun App(
     LifecycleResumeEffect(Unit) {
         onboardingViewModel.refresh()
         homeViewModel.refresh()
+        parentSettingsViewModel.refreshBlocking()
         onPauseOrDispose {}
     }
 
@@ -78,6 +79,7 @@ fun App(
                 onChangePinInput = parentSettingsViewModel::onChangePinInput,
                 onSubmitChangePin = parentSettingsViewModel::onSubmitChangePin,
                 onCancelChangePin = parentSettingsViewModel::onCancelChangePin,
+                onEnableBlocking = parentSettingsViewModel::onEnableBlocking,
                 onClose = ::closeParentSettings,
             )
             return@OkidoTheme
@@ -88,6 +90,7 @@ fun App(
                 state = extraTime,
                 alwaysApps = state.alwaysApps,
                 icons = state.icons,
+                blockingEnabled = state.blockingEnabled,
                 onLaunch = homeViewModel::onLaunch,
                 onPinChange = extraTimeViewModel::onPinChange,
                 onSubmitPin = extraTimeViewModel::onSubmitPin,
@@ -115,6 +118,7 @@ fun App(
                     remaining = state.remaining,
                     sleepiness = state.sleepiness,
                     icons = state.icons,
+                    blockingEnabled = state.blockingEnabled,
                     onLaunch = homeViewModel::onLaunch,
                     onMoreTime = { askingMoreTime = true },
                     onLockNow = homeViewModel::onLockNow,

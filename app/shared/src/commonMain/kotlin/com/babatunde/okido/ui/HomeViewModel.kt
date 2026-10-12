@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.ImageBitmap
 import com.babatunde.okido.core.AllowedApps
 import com.babatunde.okido.core.AlwaysAllowedApps
+import com.babatunde.okido.core.IsBlockingEnabled
 import com.babatunde.okido.core.LaunchApp
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.core.providers.AppIconLoader
@@ -29,9 +30,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 sealed interface HomeUiState {
+    /** False once Android stopped Okido's blocking, so the screens can say so. */
+    val blockingEnabled: Boolean
+
     data class Locked(
         val alwaysApps: List<LaunchableApp> = emptyList(),
         val icons: Map<String, ImageBitmap> = emptyMap(),
+        override val blockingEnabled: Boolean = true,
     ) : HomeUiState
     data class Unlocked(
         val apps: List<LaunchableApp>,
@@ -39,6 +44,7 @@ sealed interface HomeUiState {
         /** How sleepy the companion is: the share of the granted time already used, from 0 to 1. */
         val sleepiness: Float = 0f,
         val icons: Map<String, ImageBitmap> = emptyMap(),
+        override val blockingEnabled: Boolean = true,
     ) : HomeUiState
 }
 
@@ -50,6 +56,7 @@ class HomeViewModel(
     private val appIconLoader: AppIconLoader,
     private val launchApp: LaunchApp,
     private val lockNow: LockNow,
+    private val isBlockingEnabled: IsBlockingEnabled,
 ) : ViewModel() {
     private val apps = MutableStateFlow(LoadedApps())
     private val icons = MutableStateFlow<Map<String, ImageBitmap>>(emptyMap())
@@ -64,11 +71,11 @@ class HomeViewModel(
     }
 
     val state: StateFlow<HomeUiState> =
-        combine(merge(ticks, refreshes).map { remainingTime() to sessionProgress() }, apps, icons) { (remaining, progress), apps, icons ->
-            if (remaining > Duration.ZERO) {
-                HomeUiState.Unlocked(apps.allowed, remaining, progress.toFloat(), icons)
+        combine(merge(ticks, refreshes).map { Check(remainingTime(), sessionProgress(), isBlockingEnabled()) }, apps, icons) { check, apps, icons ->
+            if (check.remaining > Duration.ZERO) {
+                HomeUiState.Unlocked(apps.allowed, check.remaining, check.progress.toFloat(), icons, check.blockingEnabled)
             } else {
-                HomeUiState.Locked(apps.always, icons)
+                HomeUiState.Locked(apps.always, icons, check.blockingEnabled)
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState.Locked())
 
@@ -100,3 +107,6 @@ private data class LoadedApps(
     val allowed: List<LaunchableApp> = emptyList(),
     val always: List<LaunchableApp> = emptyList(),
 )
+
+/** What each tick reads again: time, progress and whether Android still runs the blocking. */
+private data class Check(val remaining: Duration, val progress: Double, val blockingEnabled: Boolean)

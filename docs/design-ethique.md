@@ -69,6 +69,7 @@ Fait le 12/10/2026 : on a passé chaque écran au crible de la méthode Designer
 | En thème clair, le gris des explications faisait 2,9:1, le rouge 3,2:1 et le bleu 3,6:1 : en dessous du minimum de 4,5:1. | Le gris passe à `#6C6C70` (4,7:1), le bleu à `#0062CC` (5,2:1) et le rouge à `#D70015` (4,8:1). |
 | « Bloquer maintenant » était en rouge, la couleur du danger, et son nom sonnait comme une punition, alors qu'arrêter de soi-même est le geste à encourager. | Il devient « J'ai fini », dans la couleur du texte. |
 | À l'accueil, « Demander plus de temps » était la première action, en bleu, même quand il restait du temps : une invitation permanente à en demander plus. | « J'ai fini » devient le bouton principal. « Demander plus de temps » n'est plus qu'un lien gris en dessous. |
+| Si Android arrêtait le service d'accessibilité, Okido ne bloquait plus rien et personne ne le savait. | L'onboarding prévient que le blocage peut s'arrêter. Okido le vérifie à chaque retour sur l'accueil et le signale par un bandeau que l'enfant peut lire aussi. Le parent le réactive depuis les réglages parent. Il n'y a pas de notification permanente : ce serait du bruit, et elle ne servirait à rien une fois le service arrêté. |
 
 ### Reste à faire
 - **Choix des apps (onboarding)** : « Continuer » et « Plus tard » font la même chose. N'en garder qu'un.

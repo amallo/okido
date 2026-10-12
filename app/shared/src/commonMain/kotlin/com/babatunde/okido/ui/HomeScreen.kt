@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.babatunde.okido.core.LaunchableApp
+import com.babatunde.okido.ui.components.BlockingOffBanner
 import com.babatunde.okido.ui.components.Companion
 import com.babatunde.okido.ui.theme.OkidoTheme
 import okido.shared.generated.resources.Res
@@ -51,6 +52,7 @@ fun HomeScreen(
     remaining: Duration,
     sleepiness: Float = 0f,
     icons: Map<String, ImageBitmap> = emptyMap(),
+    blockingEnabled: Boolean = true,
     onLaunch: (LaunchableApp) -> Unit = {},
     onMoreTime: () -> Unit = {},
     onLockNow: () -> Unit = {},
@@ -69,6 +71,7 @@ fun HomeScreen(
                 )
                 TimePill(remaining)
             }
+            if (!blockingEnabled) BlockingOffBanner(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
             // Only the apps scroll, so the time and the actions stay in view however many apps are allowed.
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
@@ -189,6 +192,18 @@ private fun HomePreview() {
             ),
             remaining = 25.minutes,
             sleepiness = 0.6f,
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun HomeBlockingOffPreview() {
+    OkidoTheme {
+        HomeScreen(
+            apps = listOf(LaunchableApp(id = "com.example.camera", label = "Appareil photo")),
+            remaining = 25.minutes,
+            blockingEnabled = false,
         )
     }
 }

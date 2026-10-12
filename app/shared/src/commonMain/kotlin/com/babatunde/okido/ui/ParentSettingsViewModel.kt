@@ -8,6 +8,8 @@ import com.babatunde.okido.core.AppSetting
 import com.babatunde.okido.core.AppSettings
 import com.babatunde.okido.core.ChangeParentPin
 import com.babatunde.okido.core.ChangeParentPinResult
+import com.babatunde.okido.core.IsBlockingEnabled
+import com.babatunde.okido.core.OpenBlockingSettings
 import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.VerifyParentPin
 import com.babatunde.okido.core.providers.AppIconLoader
@@ -26,6 +28,7 @@ sealed interface ParentSettingsUiState {
         val apps: List<AppSetting>,
         val icons: Map<String, ImageBitmap> = emptyMap(),
         val pinChanged: Boolean = false,
+        val blockingEnabled: Boolean = true,
     ) : ParentSettingsUiState
 
     /** Asks the current code, then the new one twice; [settings] is where the parent goes back to. */
@@ -49,6 +52,8 @@ class ParentSettingsViewModel(
     private val appIconLoader: AppIconLoader,
     private val setAppAccess: SetAppAccess,
     private val changeParentPin: ChangeParentPin,
+    private val isBlockingEnabled: IsBlockingEnabled,
+    private val openBlockingSettings: OpenBlockingSettings,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ParentSettingsUiState>(ParentSettingsUiState.PinRequired())
     val state: StateFlow<ParentSettingsUiState> = _state.asStateFlow()
@@ -66,7 +71,11 @@ class ParentSettingsViewModel(
         viewModelScope.launch {
             _state.value = withContext(Dispatchers.IO) {
                 val apps = appSettings()
-                ParentSettingsUiState.Unlocked(apps, appIconLoader.decodeIcons(apps.map { it.app }))
+                ParentSettingsUiState.Unlocked(
+                    apps,
+                    appIconLoader.decodeIcons(apps.map { it.app }),
+                    blockingEnabled = isBlockingEnabled(),
+                )
             }
         }
     }
@@ -114,6 +123,16 @@ class ParentSettingsViewModel(
     fun onCancelChangePin() {
         val state = _state.value as? ParentSettingsUiState.ChangingPin ?: return
         _state.value = state.settings
+    }
+
+    /** Opens Android's accessibility settings; [refreshBlocking] reads the new state once the parent is back. */
+    fun onEnableBlocking() = openBlockingSettings()
+
+    fun refreshBlocking() {
+        _state.update { state ->
+            if (state !is ParentSettingsUiState.Unlocked) return@update state
+            state.copy(blockingEnabled = isBlockingEnabled())
+        }
     }
 
     fun close() {

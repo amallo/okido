@@ -46,12 +46,13 @@ fun ParentSettingsScreen(
     onChangePinInput: (String) -> Unit = {},
     onSubmitChangePin: () -> Unit = {},
     onCancelChangePin: () -> Unit = {},
+    onEnableBlocking: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         when (state) {
             is ParentSettingsUiState.PinRequired -> PinStep(state, onPinChange, onSubmitPin, onClose)
-            is ParentSettingsUiState.Unlocked -> AppsStep(state, onAccessChange, onChangePin, onClose)
+            is ParentSettingsUiState.Unlocked -> AppsStep(state, onAccessChange, onChangePin, onEnableBlocking, onClose)
             is ParentSettingsUiState.ChangingPin ->
                 ChangePinStep(state, onChangePinInput, onSubmitChangePin, onCancelChangePin)
         }
@@ -123,6 +124,7 @@ private fun AppsStep(
     state: ParentSettingsUiState.Unlocked,
     onAccessChange: (AppSetting, AppAccess) -> Unit,
     onChangePin: () -> Unit,
+    onEnableBlocking: () -> Unit,
     onClose: () -> Unit,
 ) {
     val apps = state.apps
@@ -139,6 +141,13 @@ private fun AppsStep(
             }
         }
         LazyColumn(contentPadding = PaddingValues(vertical = 16.dp)) {
+            item {
+                BlockingSection(
+                    enabled = state.blockingEnabled,
+                    onEnable = onEnableBlocking,
+                    modifier = Modifier.padding(bottom = 24.dp),
+                )
+            }
             item {
                 GroupedSection(
                     header = "Code parent",
@@ -182,6 +191,37 @@ private fun AppsStep(
                     modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 6.dp),
                 )
             }
+        }
+    }
+}
+
+/** Whether Android still runs Okido's blocking, with a way back to its settings when it stopped. */
+@Composable
+private fun BlockingSection(enabled: Boolean, onEnable: () -> Unit, modifier: Modifier = Modifier) {
+    GroupedSection(
+        header = "Blocage",
+        footer = if (enabled) null else "Android a arrêté le blocage : les apps ne sont plus bloquées. " +
+            "Réactive Okido dans les réglages d'accessibilité.",
+        modifier = modifier,
+    ) {
+        GroupedRow(
+            label = "Blocage des apps",
+            trailing = {
+                Text(
+                    text = if (enabled) "Actif" else "Désactivé",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
+                )
+            },
+            showDivider = !enabled,
+        )
+        if (!enabled) {
+            GroupedRow(
+                label = "Réactiver",
+                labelColor = MaterialTheme.colorScheme.primary,
+                showDivider = false,
+                onClick = onEnable,
+            )
         }
     }
 }
@@ -255,6 +295,19 @@ private fun AppsPreview() {
                     AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), AppAccess.Timed),
                     AppSetting(LaunchableApp(id = "com.example.radio", label = "Radio"), AppAccess.Always),
                 ),
+            ),
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun BlockingOffPreview() {
+    OkidoTheme {
+        ParentSettingsScreen(
+            state = ParentSettingsUiState.Unlocked(
+                listOf(AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), AppAccess.Timed)),
+                blockingEnabled = false,
             ),
         )
     }

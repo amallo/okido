@@ -5,4 +5,6 @@ interface OnboardingStore {
     fun complete()
     fun areAppsChosen(): Boolean
     fun chooseApps()
+    fun isBlockingWarningRead(): Boolean
+    fun readBlockingWarning()
 }

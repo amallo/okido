@@ -28,9 +28,18 @@ class NextOnboardingStepTest {
     }
 
     @Test
-    fun asksToMakeOkidoTheHomeScreenOnceBlockingIsEnabled() {
+    fun warnsThatBlockingCanBeTurnedOffOnceItIsEnabled() {
         val nextOnboardingStep = NextOnboardingStep(
             FakeOnboardingStore(appsChosen = true), FakeParentPin("1234"), FakeBlockingService(enabled = true), FakeHomeApp(),
+        )
+
+        assertEquals(OnboardingStep.BlockingCanStop, nextOnboardingStep())
+    }
+
+    @Test
+    fun asksToMakeOkidoTheHomeScreenOnceTheWarningIsRead() {
+        val nextOnboardingStep = NextOnboardingStep(
+            FakeOnboardingStore(appsChosen = true, blockingWarningRead = true), FakeParentPin("1234"), FakeBlockingService(enabled = true), FakeHomeApp(),
         )
 
         assertEquals(OnboardingStep.SetAsHome, nextOnboardingStep())
@@ -38,7 +47,7 @@ class NextOnboardingStepTest {
 
     @Test
     fun completesTheOnboardingOnceOkidoIsTheHomeScreen() {
-        val onboardingStore = FakeOnboardingStore(appsChosen = true)
+        val onboardingStore = FakeOnboardingStore(appsChosen = true, blockingWarningRead = true)
         val nextOnboardingStep = NextOnboardingStep(onboardingStore, FakeParentPin("1234"), FakeBlockingService(enabled = true), FakeHomeApp(okido = true))
 
         assertEquals(OnboardingStep.Done, nextOnboardingStep())

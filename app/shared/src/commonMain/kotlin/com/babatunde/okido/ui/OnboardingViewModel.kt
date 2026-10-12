@@ -13,6 +13,7 @@ import com.babatunde.okido.core.NextOnboardingStep
 import com.babatunde.okido.core.OnboardingStep
 import com.babatunde.okido.core.OpenBlockingSettings
 import com.babatunde.okido.core.OpenHomeSettings
+import com.babatunde.okido.core.ReadBlockingWarning
 import com.babatunde.okido.core.SetAppAccess
 import com.babatunde.okido.core.providers.AppIconLoader
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-enum class OnboardingPage { Welcome, Guidelines, Privacy, CreatePin, ConfirmPin, ChooseApps, EnableBlocking, SetAsHome, Done }
+enum class OnboardingPage { Welcome, Guidelines, Privacy, CreatePin, ConfirmPin, ChooseApps, EnableBlocking, BlockingCanStop, SetAsHome, Done }
 
 private val introductionPages = listOf(OnboardingPage.Welcome, OnboardingPage.Guidelines, OnboardingPage.Privacy, OnboardingPage.CreatePin, OnboardingPage.ConfirmPin)
 
@@ -47,6 +48,7 @@ class OnboardingViewModel(
     private val appIconLoader: AppIconLoader,
     private val setAppAccess: SetAppAccess,
     private val finishChoosingApps: FinishChoosingApps,
+    private val readBlockingWarning: ReadBlockingWarning,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OnboardingUiState(page = nextPage(OnboardingPage.Welcome)))
     val state: StateFlow<OnboardingUiState> = _state.asStateFlow()
@@ -68,6 +70,10 @@ class OnboardingViewModel(
                 OnboardingPage.Privacy -> state.copy(page = OnboardingPage.CreatePin)
                 OnboardingPage.ChooseApps -> {
                     finishChoosingApps()
+                    state.copy(page = nextPage(state.page))
+                }
+                OnboardingPage.BlockingCanStop -> {
+                    readBlockingWarning()
                     state.copy(page = nextPage(state.page))
                 }
                 else -> state
@@ -133,6 +139,7 @@ class OnboardingViewModel(
         OnboardingStep.Introduction -> if (current in introductionPages) current else OnboardingPage.Welcome
         OnboardingStep.ChooseApps -> OnboardingPage.ChooseApps
         OnboardingStep.EnableBlocking -> OnboardingPage.EnableBlocking
+        OnboardingStep.BlockingCanStop -> OnboardingPage.BlockingCanStop
         OnboardingStep.SetAsHome -> OnboardingPage.SetAsHome
         OnboardingStep.Done -> OnboardingPage.Done
     }
