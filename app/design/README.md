@@ -2,6 +2,12 @@
 
 `okido-icon.svg` : un « O » en forme de sablier, généré avec [Recraft](https://www.recraft.ai) puis converti en vectoriel.
 
+## Contenu généré par IA
+Cette icône a été **générée par une IA**. Nous le déclarons ici par transparence, en accord avec les obligations européennes sur les contenus générés par IA.
+
+- **Modèle** : `recraft-ai/recraft-v4.1-pro`
+- **Prompt** : voir la section [Prompt](#prompt) ci-dessous.
+
 ## Couleurs
 Les mêmes que dans `OkidoColors` (`OkidoTheme.kt`) :
 
