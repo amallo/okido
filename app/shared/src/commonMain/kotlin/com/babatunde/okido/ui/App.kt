@@ -2,6 +2,8 @@ package com.babatunde.okido.ui
 
 import com.babatunde.okido.ui.theme.OkidoTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.babatunde.okido.core.GrantExtraTimeResult
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App(
     homeViewModel: HomeViewModel = koinViewModel(),
@@ -46,8 +49,11 @@ fun App(
         }
     }
 
+    // Okido is the child's home: back never leaves it, it only closes the screen on top.
+    BackHandler {}
     OkidoTheme {
         if (onboarding.page != OnboardingPage.Done) {
+            BackHandler(onBack = onboardingViewModel::onBack)
             OnboardingScreen(
                 state = onboarding,
                 onContinue = onboardingViewModel::onContinue,
@@ -61,6 +67,7 @@ fun App(
             return@OkidoTheme
         }
         if (showingParentSettings) {
+            BackHandler(onBack = ::closeParentSettings)
             ParentSettingsScreen(
                 state = parentSettings,
                 onPinChange = parentSettingsViewModel::onPinChange,
@@ -88,6 +95,10 @@ fun App(
                 onParentSettings = { showingParentSettings = true },
             )
             is HomeUiState.Unlocked -> if (askingMoreTime) {
+                BackHandler {
+                    extraTimeViewModel.onCancel()
+                    askingMoreTime = false
+                }
                 ExtraTimeScreen(
                     title = "Plus de temps",
                     state = extraTime,
