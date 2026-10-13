@@ -101,6 +101,11 @@ android {
             keyPassword = secret("OKIDO_KEY_PASSWORD")
         }
     }
+    // No dependency metadata block: it is encrypted with a Google key, and F-Droid rejects opaque blobs.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
     // Nothing is compressed in the APK: the deflate output depends on the JDK's zlib (macOS here, Debian on
     // F-Droid's server), and the APK must be byte for byte identical on both for F-Droid to publish ours.
     androidResources {
