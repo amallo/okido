@@ -34,5 +34,6 @@ F-Droid détecte le nouveau tag, recompile Okido et compare son APK au nôtre. S
 ## Bon à savoir
 
 - **Build reproductible.** F-Droid exige un APK identique octet pour octet. Rien dans le build ne doit dépendre de la machine, de la date ou du dossier. Pour vérifier, construire `assembleRelease` dans deux copies du projet et comparer les APK avec `cmp`.
+- **APK non compressé, réduit par R8.** F-Droid compile sous Linux avec l'OpenJDK de Debian, nous sur macOS avec un autre JDK. Leurs zlib ne compressent pas à l'identique : la 0.1.0 a échoué pour cette seule raison. Rien n'est donc compressé dans l'APK (`noCompress += ""`), et R8 le garde petit (2 Mo). Ne pas réactiver la compression.
 - **Deux signatures.** Play re-signe l'app avec sa propre clé. L'Okido de Play et celui de F-Droid ne se mettent donc pas à jour l'un par-dessus l'autre : passer de l'un à l'autre demande de désinstaller.
-- **La recette F-Droid** est dans `docs/fdroid/com.babatunde.okido.yml`. On la propose une seule fois, par merge request sur `gitlab.com/fdroid/fdroiddata`. Les versions suivantes sont détectées seules.
+- **La recette F-Droid** est dans `docs/fdroid/com.babatunde.okido.yml`, au format exact de `fdroid rewritemeta` : sans commentaires, sinon la CI de fdroiddata échoue. `AllowedAPKSigningKeys` est l'empreinte SHA-256 du certificat, en minuscules et sans `:` (`apksigner verify --print-certs okido-X.Y.Z.apk`). Elle est publique. On la propose une seule fois, par merge request sur `gitlab.com/fdroid/fdroiddata`. Les versions suivantes sont détectées seules.

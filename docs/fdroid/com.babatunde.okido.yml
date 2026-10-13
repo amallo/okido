@@ -1,5 +1,3 @@
-# Recette F-Droid d'Okido, à copier dans metadata/ de https://gitlab.com/fdroid/fdroiddata
-# F-Droid recompile chaque version et publie l'APK signé par nous s'il est identique au sien (build reproductible).
 Categories:
   - System
 License: GPL-3.0-or-later
@@ -14,23 +12,22 @@ Repo: https://github.com/amallo/okido.git
 Binaries: https://github.com/amallo/okido/releases/download/v%v/okido-%v.apk
 
 Builds:
-  - versionName: 0.1.0
-    versionCode: 100
-    commit: v0.1.0
+  - versionName: 0.1.1
+    versionCode: 101
+    commit: v0.1.1
     subdir: app/androidApp
     sudo:
       - apt-get update
-      - apt-get install -y openjdk-17-jdk-headless
+      - apt-get install -y openjdk-21-jdk-headless
       - update-alternatives --auto java
+    prebuild: sed -i -e '/^toolchainVendor=/d' -e '/^toolchainUrl/d' ../gradle/gradle-daemon-jvm.properties
     gradle:
       - yes
 
-# Empreinte SHA-256 du certificat de signature, sans les deux-points, en minuscules :
-# keytool -printcert -jarfile okido-0.1.0.apk
 AllowedAPKSigningKeys: 19211bb741bf3f611f4d52467374d1264e1a629f3bd5afff0a2e1c07c0817447
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v.*
 UpdateCheckData: app/version.properties|versionCode=(\d+)|.|versionName=(.*)
-CurrentVersion: 0.1.0
-CurrentVersionCode: 100
+CurrentVersion: 0.1.1
+CurrentVersionCode: 101

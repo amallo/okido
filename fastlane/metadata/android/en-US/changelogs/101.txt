@@ -1,0 +1,1 @@
+Much smaller app (2 MB instead of 10).
