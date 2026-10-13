@@ -20,9 +20,9 @@ Builds:
       - apt-get update
       - apt-get install -y openjdk-21-jdk-headless
       - update-alternatives --auto java
-    prebuild: sed -i -e '/^toolchainVendor=/d' -e '/^toolchainUrl/d' ../gradle/gradle-daemon-jvm.properties
     gradle:
       - yes
+    prebuild: sed -i -e '/^toolchainVendor=/d' -e '/^toolchainUrl/d' ../gradle/gradle-daemon-jvm.properties
 
 AllowedAPKSigningKeys: 19211bb741bf3f611f4d52467374d1264e1a629f3bd5afff0a2e1c07c0817447
 
