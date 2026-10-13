@@ -1,0 +1,1 @@
+Première version : apps autorisées, temps limité, pause, code parent, compagnon, et alerte si le blocage s'arrête.

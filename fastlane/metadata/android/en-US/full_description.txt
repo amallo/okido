@@ -1,0 +1,25 @@
+<p>Okido helps keep screen time reasonable, without tracking and without manipulation. Everything stays on the device: no account, no cloud, nothing is sent over the internet.</p>
+
+<p><b>How it works</b></p>
+<ul>
+<li>Okido becomes the device's home screen and only shows the allowed apps.</li>
+<li>For each app, a parent chooses: always blocked, limited time, or always open (like the radio).</li>
+<li>When time is up, it's time for a break. Always-open apps stay available.</li>
+<li>A "Take a break" button lets anyone stop on their own, at any time.</li>
+<li>Only a parent, with their code, can grant more time or change the settings.</li>
+<li>A little companion slowly falls asleep as time goes by.</li>
+</ul>
+
+<p><b>Our commitments</b></p>
+<ul>
+<li>Offline: Okido works entirely without a connection.</li>
+<li>No account, no ads, no trackers.</li>
+<li>No surveillance: Okido does not look at what happens inside apps and keeps no history.</li>
+<li>Transparent: the screen always explains why Okido is there, in words a child understands.</li>
+<li>The parent code is stored hashed, only on the device.</li>
+</ul>
+
+<p><b>Accessibility service</b></p>
+<p>To block apps that are not allowed, Okido uses Android's accessibility service. It only reads the name of the app on screen, to compare it with the list of allowed apps. Okido does not read the screen's content or what is typed.</p>
+<p>This service can be turned off in Android's settings, or stopped by Android itself. Okido then says so on the home screen and in the parent settings.</p>
+<p>The app is currently in French.</p>

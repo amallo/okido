@@ -1,0 +1,1 @@
+First release: allowed apps, limited time, breaks, parent code, companion, and a warning when blocking stops.

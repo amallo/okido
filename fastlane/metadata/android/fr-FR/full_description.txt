@@ -1,0 +1,24 @@
+<p>Okido aide à garder un temps d'écran raisonnable, sans surveiller et sans manipuler. Tout se passe sur l'appareil : pas de compte, pas de cloud, rien n'est envoyé sur internet.</p>
+
+<p><b>Comment ça marche</b></p>
+<ul>
+<li>Okido devient l'écran d'accueil de l'appareil et ne montre que les apps autorisées.</li>
+<li>Pour chaque app, un parent choisit : toujours bloquée, en temps limité, ou toujours ouverte (comme la radio).</li>
+<li>Quand le temps est écoulé, c'est l'heure de la pause. Les apps toujours ouvertes restent disponibles.</li>
+<li>Un bouton « Faire une pause » permet de s'arrêter de soi-même, à tout moment.</li>
+<li>Seul un parent, avec son code, peut accorder plus de temps ou changer les réglages.</li>
+<li>Un petit compagnon s'endort doucement à mesure que le temps passe.</li>
+</ul>
+
+<p><b>Nos engagements</b></p>
+<ul>
+<li>Hors ligne : Okido fonctionne entièrement sans connexion.</li>
+<li>Aucun compte, aucune publicité, aucun traceur.</li>
+<li>Pas de surveillance : Okido ne regarde pas ce qui se passe dans les apps et n'enregistre aucun historique.</li>
+<li>Transparent : l'écran explique toujours pourquoi Okido est là, avec des mots qu'un enfant comprend.</li>
+<li>Le code parent est stocké haché, uniquement sur l'appareil.</li>
+</ul>
+
+<p><b>Service d'accessibilité</b></p>
+<p>Pour bloquer les apps non autorisées, Okido utilise le service d'accessibilité d'Android. Il lit uniquement le nom de l'app affichée à l'écran, pour le comparer à la liste des apps autorisées. Okido ne lit pas le contenu de l'écran ni ce qui est tapé.</p>
+<p>Ce service peut être désactivé dans les réglages d'Android, ou arrêté par Android lui-même. Okido le signale alors sur l'accueil et dans les réglages parent.</p>
