@@ -106,7 +106,7 @@ fun HomeScreen(
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).height(52.dp),
             ) {
-                Text("J'ai fini", style = MaterialTheme.typography.titleMedium)
+                Text("Faire une pause", style = MaterialTheme.typography.titleMedium)
             }
             TextButton(onClick = onMoreTime, modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Text(
