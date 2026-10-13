@@ -17,8 +17,11 @@ val localProperties = Properties().apply {
 // Only release builds read the keychain, so debug builds never trigger a keychain prompt.
 val releaseRequested = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
 
+// The keychain only exists on macOS: elsewhere (F-Droid's Linux server), the release is built unsigned.
+val onMac = System.getProperty("os.name").startsWith("Mac")
+
 /** An entry of the "okido-release" service in the macOS keychain. */
-fun keychain(account: String): String? = if (!releaseRequested) null else providers.exec {
+fun keychain(account: String): String? = if (!releaseRequested || !onMac) null else providers.exec {
     commandLine("security", "find-generic-password", "-s", "okido-release", "-a", account, "-w")
     isIgnoreExitValue = true
 }.standardOutput.asText.get().trim().ifEmpty { null }
@@ -98,15 +101,27 @@ android {
             keyPassword = secret("OKIDO_KEY_PASSWORD")
         }
     }
+    // Nothing is compressed in the APK: the deflate output depends on the JDK's zlib (macOS here, Debian on
+    // F-Droid's server), and the APK must be byte for byte identical on both for F-Droid to publish ours.
+    androidResources {
+        noCompress += ""
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        dex {
+            useLegacyPackaging = false
+        }
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
     buildTypes {
         release {
             if (keystore != null) signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
