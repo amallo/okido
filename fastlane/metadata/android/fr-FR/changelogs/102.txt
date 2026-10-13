@@ -1,0 +1,1 @@
+Pas de changement visible : l'APK ne contient plus de métadonnées chiffrées sur ses dépendances.

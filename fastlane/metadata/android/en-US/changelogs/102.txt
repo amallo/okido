@@ -1,0 +1,1 @@
+No visible change: the APK no longer carries encrypted dependency metadata.
