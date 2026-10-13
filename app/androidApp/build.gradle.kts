@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.attribute.PosixFilePermissions
+import java.util.Base64
 import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -11,13 +14,54 @@ val localProperties = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
-/** A release secret, from the environment (CI) or from the untracked local.properties. */
-fun secret(name: String): String? = System.getenv(name) ?: localProperties.getProperty(name)
+// Only release builds read the keychain, so debug builds never trigger a keychain prompt.
+val releaseRequested = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
 
-fun git(vararg args: String): String? = providers.exec {
-    commandLine("git", *args)
+/** An entry of the "okido-release" service in the macOS keychain. */
+fun keychain(account: String): String? = if (!releaseRequested) null else providers.exec {
+    commandLine("security", "find-generic-password", "-s", "okido-release", "-a", account, "-w")
     isIgnoreExitValue = true
 }.standardOutput.asText.get().trim().ifEmpty { null }
+
+/** A release secret, from the environment (CI), the macOS keychain, or the untracked local.properties. */
+fun secret(name: String): String? = System.getenv(name) ?: keychain(name) ?: localProperties.getProperty(name)
+
+/** Where the keystore kept in the keychain is decoded for a release build; deleted once the build is done. */
+val keychainKeystore: File = layout.buildDirectory.file("signing/okido-upload.jks").get().asFile
+
+/** Deletes the decoded keystore when the build ends, whether it succeeded or failed. */
+abstract class KeystoreCleanup : BuildService<KeystoreCleanup.Params>, AutoCloseable {
+    interface Params : BuildServiceParameters {
+        val keystore: RegularFileProperty
+    }
+
+    override fun close() {
+        parameters.keystore.get().asFile.delete()
+    }
+}
+
+/** The upload keystore: a path from the environment, the keychain's copy (base64), or a path in local.properties. */
+fun releaseKeystore(): File? {
+    System.getenv("OKIDO_KEYSTORE_PATH")?.let { return rootProject.file(it) }
+    keychain("OKIDO_KEYSTORE")?.let { encoded ->
+        keychainKeystore.parentFile.mkdirs()
+        keychainKeystore.delete()
+        // Created readable by the owner only, before a single byte of the key is written.
+        Files.createFile(keychainKeystore.toPath(), PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------")))
+        keychainKeystore.writeBytes(Base64.getMimeDecoder().decode(encoded))
+        // Starting the service is what gets it closed, so the file is deleted at the end of this build.
+        gradle.sharedServices.registerIfAbsent("keystoreCleanup", KeystoreCleanup::class) {
+            parameters.keystore = keychainKeystore
+        }.get()
+        return keychainKeystore
+    }
+    return localProperties.getProperty("OKIDO_KEYSTORE_PATH")?.let { rootProject.file(it) }
+}
+
+val keystore = releaseKeystore()
+
+/** The release version, kept in a file so F-Droid can read it without building. */
+val releaseVersion = Properties().apply { rootProject.file("version.properties").inputStream().use { load(it) } }
 
 kotlin {
     compilerOptions {
@@ -43,12 +87,12 @@ android {
         applicationId = "com.babatunde.okido"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = git("rev-list", "--count", "HEAD")?.toInt() ?: 1
-        versionName = git("describe", "--tags", "--abbrev=0", "--match", "v*")?.removePrefix("v") ?: "0.1.0"
+        versionCode = releaseVersion.getProperty("versionCode").toInt()
+        versionName = releaseVersion.getProperty("versionName")
     }
     signingConfigs {
         create("release") {
-            secret("OKIDO_KEYSTORE_PATH")?.let { storeFile = rootProject.file(it) }
+            storeFile = keystore
             storePassword = secret("OKIDO_KEYSTORE_PASSWORD")
             keyAlias = secret("OKIDO_KEY_ALIAS")
             keyPassword = secret("OKIDO_KEY_PASSWORD")
@@ -61,7 +105,7 @@ android {
     }
     buildTypes {
         release {
-            if (secret("OKIDO_KEYSTORE_PATH") != null) signingConfig = signingConfigs.getByName("release")
+            if (keystore != null) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -77,6 +121,11 @@ android {
         compose = true
         buildConfig = true
     }
+}
+
+// The keystore is decoded while Gradle configures the build: a cached configuration would skip that step.
+tasks.matching { it.name == "packageRelease" || it.name == "signReleaseBundle" }.configureEach {
+    notCompatibleWithConfigurationCache("decodes the upload keystore from the keychain at configuration time")
 }
 
 // Uploads with the service account JSON given in ANDROID_PUBLISHER_CREDENTIALS.
