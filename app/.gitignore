@@ -19,3 +19,5 @@ captures
 node_modules/
 *.jks
 *.keystore
+# Release APKs are published on GitHub, never committed
+*.apk
