@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.babatunde.okido.core.GrantExtraTimeResult
+import com.babatunde.okido.core.usecases.GrantExtraTimeResult
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.BlockingOffBanner
 import com.babatunde.okido.ui.components.Companion

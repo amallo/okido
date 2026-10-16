@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.babatunde.okido.core.GrantExtraTimeResult
+import com.babatunde.okido.core.usecases.GrantExtraTimeResult
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)

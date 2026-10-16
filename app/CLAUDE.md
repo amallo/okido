@@ -5,6 +5,7 @@ Le code propre à une plateforme va dans `androidMain` / `iosMain`.
 
 ## Clean architecture (packages sous `com.babatunde.okido`)
 - `core` : le métier. Entités et use cases. Kotlin pur, uniquement dans `commonMain`.
+  - `core.usecases` : les use cases.
   - `core.providers` : les ports (interfaces) dont dépendent les use cases.
 - `infra` : points d'entrée système (service d'accessibilité, receivers) et assemblage Koin.
   Chaque plateforme fournit `actual val infraModule` (Koin).

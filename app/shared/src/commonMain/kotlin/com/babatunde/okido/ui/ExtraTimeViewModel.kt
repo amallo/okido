@@ -1,9 +1,9 @@
 package com.babatunde.okido.ui
 
 import androidx.lifecycle.ViewModel
-import com.babatunde.okido.core.GrantExtraTime
-import com.babatunde.okido.core.GrantExtraTimeResult
-import com.babatunde.okido.core.VerifyParentPin
+import com.babatunde.okido.core.usecases.GrantExtraTime
+import com.babatunde.okido.core.usecases.GrantExtraTimeResult
+import com.babatunde.okido.core.usecases.VerifyParentPin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
