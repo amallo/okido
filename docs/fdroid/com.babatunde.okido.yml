@@ -14,7 +14,7 @@ Binaries: https://github.com/amallo/okido/releases/download/v%v/okido-%v.apk
 Builds:
   - versionName: 0.1.2
     versionCode: 102
-    commit: v0.1.2
+    commit: b5be6f69b21efa8d941a27fbe56ba818d6d9d4f7
     subdir: app/androidApp
     sudo:
       - apt-get update
