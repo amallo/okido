@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.compose.ui.graphics.ImageBitmap
 import com.babatunde.okido.core.AppAccess
 import com.babatunde.okido.core.AppSetting
+import com.babatunde.okido.core.AppVersion
 import com.babatunde.okido.core.usecases.AppSettings
 import com.babatunde.okido.core.usecases.ChangeParentPin
 import com.babatunde.okido.core.usecases.ChangeParentPinResult
+import com.babatunde.okido.core.usecases.GetAppVersion
 import com.babatunde.okido.core.usecases.IsBlockingEnabled
 import com.babatunde.okido.core.usecases.OpenBlockingSettings
 import com.babatunde.okido.core.usecases.SetAppAccess
@@ -29,6 +31,7 @@ sealed interface ParentSettingsUiState {
         val icons: Map<String, ImageBitmap> = emptyMap(),
         val pinChanged: Boolean = false,
         val blockingEnabled: Boolean = true,
+        val version: AppVersion? = null,
     ) : ParentSettingsUiState
 
     /** Asks the current code, then the new one twice; [settings] is where the parent goes back to. */
@@ -54,6 +57,7 @@ class ParentSettingsViewModel(
     private val changeParentPin: ChangeParentPin,
     private val isBlockingEnabled: IsBlockingEnabled,
     private val openBlockingSettings: OpenBlockingSettings,
+    private val getAppVersion: GetAppVersion,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ParentSettingsUiState>(ParentSettingsUiState.PinRequired())
     val state: StateFlow<ParentSettingsUiState> = _state.asStateFlow()
@@ -75,6 +79,7 @@ class ParentSettingsViewModel(
                     apps,
                     appIconLoader.decodeIcons(apps.map { it.app }),
                     blockingEnabled = isBlockingEnabled(),
+                    version = getAppVersion(),
                 )
             }
         }

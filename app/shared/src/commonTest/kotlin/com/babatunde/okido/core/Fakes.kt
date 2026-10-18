@@ -6,6 +6,7 @@ import com.babatunde.okido.core.providers.AppCatalog
 import com.babatunde.okido.core.providers.BlockingService
 import com.babatunde.okido.core.providers.Clock
 import com.babatunde.okido.core.providers.HomeApp
+import com.babatunde.okido.core.providers.InstalledVersion
 import com.babatunde.okido.core.providers.OnboardingStore
 import com.babatunde.okido.core.providers.ParentPin
 import com.babatunde.okido.core.providers.ScreenLocker
@@ -101,4 +102,8 @@ class FakeBlockingService(private val enabled: Boolean = false) : BlockingServic
     override fun openSettings() {
         settingsOpened = true
     }
+}
+
+class FakeInstalledVersion(private val version: AppVersion) : InstalledVersion {
+    override fun get(): AppVersion = version
 }

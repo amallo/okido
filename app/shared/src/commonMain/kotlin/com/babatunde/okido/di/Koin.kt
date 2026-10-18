@@ -6,6 +6,7 @@ import com.babatunde.okido.core.usecases.AppSettings
 import com.babatunde.okido.core.usecases.ChangeParentPin
 import com.babatunde.okido.core.usecases.CreateParentPin
 import com.babatunde.okido.core.usecases.GrantExtraTime
+import com.babatunde.okido.core.usecases.GetAppVersion
 import com.babatunde.okido.core.usecases.IsBlockingEnabled
 import com.babatunde.okido.core.usecases.LaunchApp
 import com.babatunde.okido.core.usecases.LockNow
@@ -43,6 +44,7 @@ val coreModule = module {
     factoryOf(::OpenBlockingSettings)
     factoryOf(::OpenHomeSettings)
     factoryOf(::IsBlockingEnabled)
+    factoryOf(::GetAppVersion)
     factoryOf(::ReadBlockingWarning)
 }
 

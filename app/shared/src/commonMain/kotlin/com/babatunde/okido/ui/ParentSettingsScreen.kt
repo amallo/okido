@@ -18,15 +18,23 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.babatunde.okido.core.AppAccess
 import com.babatunde.okido.core.AppSetting
+import com.babatunde.okido.core.AppVersion
 import com.babatunde.okido.core.LaunchableApp
 import com.babatunde.okido.ui.components.GroupedRow
 import com.babatunde.okido.ui.components.GroupedSection
@@ -191,8 +199,43 @@ private fun AppsStep(
                     modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 6.dp),
                 )
             }
+            item {
+                AboutSection(version = state.version, modifier = Modifier.padding(top = 24.dp))
+            }
         }
     }
+}
+
+/** The installed version, and who made Okido with their address, copied rather than opened: Okido blocks the mail app too. */
+@Composable
+private fun AboutSection(version: AppVersion?, modifier: Modifier = Modifier) {
+    val clipboard = LocalClipboardManager.current
+    var copied by remember { mutableStateOf(false) }
+    GroupedSection(
+        header = "À propos",
+        footer = if (copied) "Adresse copiée." else "Pour écrire à amallo : $AUTHOR_EMAIL. Touche « Créé par » pour copier l'adresse.",
+        modifier = modifier,
+    ) {
+        if (version != null) {
+            GroupedRow(label = "Version", trailing = { TrailingText("${version.name} (${version.build})") })
+        }
+        GroupedRow(
+            label = "Créé par",
+            trailing = { TrailingText("amallo", color = MaterialTheme.colorScheme.primary) },
+            showDivider = false,
+            onClick = {
+                clipboard.setText(AnnotatedString(AUTHOR_EMAIL))
+                copied = true
+            },
+        )
+    }
+}
+
+private const val AUTHOR_EMAIL = "hello@babatunde.eu"
+
+@Composable
+private fun TrailingText(text: String, color: Color = MaterialTheme.colorScheme.onSurfaceVariant) {
+    Text(text = text, style = MaterialTheme.typography.bodyLarge, color = color)
 }
 
 /** Whether Android still runs Okido's blocking, with a way back to its settings when it stopped. */
@@ -295,6 +338,7 @@ private fun AppsPreview() {
                     AppSetting(LaunchableApp(id = "com.example.clock", label = "Horloge"), AppAccess.Timed),
                     AppSetting(LaunchableApp(id = "com.example.radio", label = "Radio"), AppAccess.Always),
                 ),
+                version = AppVersion("0.1.2", 102),
             ),
         )
     }
